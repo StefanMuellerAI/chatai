@@ -31,6 +31,12 @@ docker compose -f docker-compose.mock.yml up --build
 Auch hier: <http://localhost:8080>. Die Compose-Datei entspricht der Original-`docker-compose.yml`,
 nur mit zusätzlichem `mock`-Dienst und der Konfiguration aus `mock/config/`.
 
+**Variante C – Vercel:** Das Repo enthält eine fertige `vercel.json`. Ein Vercel-Projekt, das mit
+diesem Repo verbunden ist, baut das Frontend statisch und startet in einer einzigen Serverless-Funktion
+(`api/index.mjs`) den unveränderten Backend-Proxy und den Mock-Server. Die Funktion leitet
+`/backend/*` an den Proxy und `/v1/*` an die Mock-API weiter. Die Konfiguration dafür liegt in
+`vercel/` (relative Pfade statt `localhost`, eigener Hinweisbanner).
+
 ## So hängt alles zusammen
 
 ```text

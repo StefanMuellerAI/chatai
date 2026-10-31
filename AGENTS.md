@@ -82,6 +82,11 @@ as one exits. The model catalog (real Chat AI IDs and names) lives in `mock/cata
 answers in `mock/models.mjs`. After adding a `front/src/config/models/<id>.json`, run
 `node mock/check-catalog.mjs`: it fails if a configured model has no mock.
 
+Vercel (`vercel.json`): the front is built with `vercel/front.json` (relative `/backend` paths), and
+`api/index.mjs` imports `mock/server.mjs` and `back/service.mjs` (config `vercel/back.json`) so both
+listen inside the function instance; the handler proxies `/backend/*` and `/v1/*` to them. Keep the
+back port in `vercel/back.json` and `BACK_PORT` in `api/index.mjs` in sync.
+
 ### Docker
 
 ```bash
