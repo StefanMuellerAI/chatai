@@ -1,0 +1,576 @@
+export default {
+  // Common phrases
+  common: {
+    loading: "Lädt...",
+    undo: "Rückgängig",
+    scroll: "Nach unten scrollen",
+    rename: "Umbenennen",
+    create: "Erstellen",
+    save: "Speichern",
+    import: "Chat importieren",
+    export: "Chat exportieren",
+    summarize: "Zusammenfassen",
+    summarizing: "Zusammenfassen...",
+    summarize_success: "Unterhaltung erfolgreich zusammengefasst.",
+    summarize_error: "Zusammenfassung fehlgeschlagen. Ihre Unterhaltung ist unverändert.",
+    clear: "Löschen",
+    abort: "Abbrechen",
+    send: "Senden",
+    stop: "Anhalten",
+    share: "Teilen",
+    delete: "Löschen",
+    cancel: "Abbrechen",
+    close: "Schließen",
+    allow: "Erlauben",
+    disallow: "Nicht erlauben",
+    refresh: "Aktualisieren",
+    notice: "Hinweis",
+    disclaimer: "Haftungsausschluss",
+    understand: "Ich verstehe",
+    ok: "OK",
+    record_start: "Aufnehmen (klicken/halten)",
+    record_stop: "Stopp (klicken/loslassen)",
+    dont_show_again: "Nicht mehr anzeigen",
+    regenerate: "Antwort neu generieren",
+    fork: "In neuem Chat fortfahren",
+    backup_data: "Daten sichern",
+    skip_backup: "Backup überspringen",
+    upgrade_chat_ai: "Chat AI aktualisieren",
+  },
+  feedback:{
+    thumbsup:"The response is good.",
+    thumbsdown: "The response is not so good.",
+    send: "Send a detailed feedback describing your observation."
+  },
+  // Sidebar
+  sidebar: {
+    new_conversation: "Neuer Chat",
+    import_persona: "Mit Persona chatten",
+    expand: "Ausklappen",
+    extend: "Ausklappen",
+    open_sidebar: "Seitenleiste öffnen",
+    close_sidebar: "Seitenleiste schließen",
+    rename_tooltip: "Umbenennen: {{title}}",
+    shortcut_new_conversation: "Strg + Shift + O",
+    user_section: "Benutzer",
+  },
+  folders: {
+    title: "Chats",
+    all: "Alle Chats",
+    uncategorized: "Nicht zugeordnete Chats",
+    create_button: "Neues Thema",
+    empty_topic: "Ziehen Sie einen Chat hierher.",
+    search_label: "Suche",
+    search_action: "Chats durchsuchen",
+    search_placeholder: "nach Titel durchsuchen",
+    search_no_results: 'Keine Treffer für "{{query}}"',
+    clear_search: "Suche löschen",
+    create_title: "Thema erstellen",
+    rename_title: "Thema umbenennen",
+    delete_title: "Thema löschen",
+    delete_description:
+      'Thema "{{name}}" löschen? Chats bleiben erhalten und erscheinen unter "Nicht zugeordnete Chats".',
+    name_label: "Themenname",
+    name_placeholder: "Themenname eingeben",
+    error_required: "Bitte einen Themennamen eingeben.",
+    create_blurb: "Fassen Sie zusammengehörige Chats in einem Thema zusammen. Konfigurieren Sie den Namen, die Farbe und das Symbol des Themas.",
+    blurb_examples: "Beispiele",
+    suggestion_homework: "Hausaufgaben",
+    suggestion_writing: "Schreiben",
+    suggestion_health: "Gesundheit",
+    suggestion_research: "Forschung",
+    creating: "Wird erstellt…",
+    done: "Fertig",
+    choose_color: "Farbe wählen",
+    choose_icon: "Symbol wählen",
+    error_generic: "Aktion konnte nicht ausgeführt werden. Bitte erneut versuchen.",
+    move_title: "Zu Thema verschieben",
+    move_description: 'Thema für "{{title}}" auswählen',
+    move_action: "Verschieben",
+    new_folder_prompt: "Neues Thema anlegen",
+    create_inline: "Erstellen",
+  },
+  // Settings panel
+  settings: {
+    tools_enabled: "Werkzeuge sind aktiviert",
+    tools_disabled: "Werkzeuge sind deaktiviert",
+    web_search_enabled: "Websuche ist erlaubt",
+    web_search_disabled: "Websuche ist deaktiviert",
+    close_panel: "Einstellungen schließen",
+    system_prompt_placeholder: "System-Prompt hier eingeben",
+    reasoning_effort: {
+      title: "Reasoning",
+      subtitle: "Legen Sie den Reasoning-Aufwand fest",
+      options: {
+        none: {
+            label: "Aus",
+            description: "Reasoning ist deaktiviert"
+        },
+        off: {
+            label: "Aus",
+            description: "Reasoning ist deaktiviert"
+        },
+        on: {
+            label: "An",
+            description: "Reasoning ist aktiviert"
+        },
+        minimal: {
+            label: "Minimal",
+            description: "Minimaler Reasoning-Aufwand",
+          },
+        low: {
+            label: "Niedrig",
+            description: "Niedriger Reasoning-Aufwand"
+        },
+        medium: {
+            label: "Mittel",
+            description: "Mittlerer Reasoning-Aufwand"
+        },
+        high: {
+            label: "Hoch",
+            description: "Hoher Reasoning-Aufwand"
+        },
+        xhigh: {
+            label: "Hoch‌+",
+            description: "Hoher Reasoning-Aufwand"
+        },
+        max: {
+            label: "Maximal",
+            description: "Maximaler Reasoning-Aufwand"
+        }
+      }
+    },
+    reset_default: "Standard zurücksetzen",
+    default: "Standard",
+    tools_title: "GWDG-Werkzeuge",
+    chat_settings: "Chat-Einstellungen",
+    label_web_search: "Websuche",
+    label_image_generation: "Bildgenerierung",
+    label_image_modification: "Bildbearbeitung",
+    label_audio_generation: "Audiogenerierung",
+    label_video_generation: "Videogenerierung",
+    label_arcana: "Arcana",
+    label_mcp_server: "MCP-Server",
+    placeholder_arcana_id: "Arcana-ID",
+    placeholder_mcp_id: "Server-ID",
+    video_queue_title: "Videogenerierungs-Warteschlange",
+    video_queue_subtitle: "Liste der Video-Generation Aufgaben",
+    video_queue_job_label: "Videoanfrage #{{count}}",
+    video_queue_status_queued: "Warteschlange",
+    video_queue_status_processing: "In Bearbeitung",
+    video_queue_status_ready: "Fertig",
+    video_queue_status_failed: "Fehlgeschlagen",
+    video_queue_delete: "Löschen",
+    video_queue_eta: "ETA ~{{seconds}}s",
+    video_queue_eta_done: "Gerade abgeschlossen",
+    video_queue_download: "Download",
+    video_queue_empty: "Noch keine Videoanfragen in der Warteschlange.",
+    video_queue_badge_label: "Video-Warteschlange",
+    video_queue_badge_tooltip_processing: "{{processing}} in Arbeit • {{ready}} fertig",
+    video_queue_badge_tooltip_ready: "{{ready}} bereit zum Download",
+    video_queue_modal_title: "Videogenerierungs-Warteschlange",
+    video_queue_modal_subtitle: "{{processing}} in Arbeit • {{ready}} fertig zum Download",
+  },
+
+  // Conversation
+  conversation: {
+    prompt: {
+      placeholder: "Frag mich",
+      attach: "Datei anhängen",
+      attach_media: "Medien anhängen",
+      attachments: "Anhänge",
+      clear_attachments: "Alle löschen",
+    },
+    attachment: {
+      image_unsupported: "Modell wechseln, um Bilder zu verarbeiten",
+      audio_unsupported: "Modell wechseln, um Audio zu verarbeiten",
+      file_unsupported: "Nur mit {{filetype}}-Modell nutzbar",
+      unprocessed: "Unverarbeitete Datei",
+    },
+    reasoning: "Denkprozess",
+    action: "Aktion",
+    sources: "Quellen und Referenzen",
+    references: "Referenzen",
+    empty_message:
+      "Ihre Gespräche werden niemals auf unseren Servern gespeichert.",
+    fork_empty: "Keine Nachrichten zum Kopieren gefunden.",
+    fork_created: "Neue Unterhaltung erstellt.",
+    fork_failed: "Unterhaltung konnte nicht kopiert werden.",
+    untitled: "Unbenannter Chat",
+  },
+  // Footer
+  footer: {
+    imprint: "Impressum",
+    terms: "Nutzungsbedingungen",
+    docs: "Doku",
+    privacy: "Datenschutz",
+    faq: "FAQ",
+    contact: "Kontakt",
+    about: "Über uns",
+    copyright: "{{year}} GWDG © Alle Rechte vorbehalten",
+    iso_certified: "ISO 27001 Zertifiziert",
+  },
+  // User Settings Modal
+  user_settings: {
+    title: "Benutzereinstellungen",
+    tabs: {
+      navigation_label: "Bereiche der Profileinstellungen",
+      profile: {
+        label: "Profil",
+        title: "Profil und Nutzung",
+        description: "Überblick über Ihre Kontodaten und Nutzung.",
+      },
+      chat: {
+        label: "Chat",
+        title: "Chat-Einstellungen",
+        description:
+          "Legen Sie Standards für alle Unterhaltungen auf diesem Gerät fest.",
+      },
+      memories: {
+        label: "Erinnerungen",
+        title: "Gespeicherte Erinnerungen",
+        description:
+          "Prüfen und verwalten Sie die von Chat AI gespeicherten Details.",
+      },
+      data: {
+        label: "Daten",
+        title: "Daten und Datenschutz",
+        description:
+          "Exportieren oder entfernen Sie die in diesem Browser gespeicherten Daten.",
+      },
+    },
+    account: {
+      username: "Benutzername",
+      email: "E-Mail-Adresse",
+    },
+    usage: {
+      title: "Nutzung",
+      description:
+        "Überblick über Ihre monatliche Nutzung und das Organisationsbudget.",
+    },
+    monthly_usage: "Monatliche Nutzung",
+    org_usage: "Nutzung des Organisationsbudgets",
+    sidebar_usage: {
+      label: "Nutzung in der Seitenleiste anzeigen",
+      description:
+        "Ihre aktuelle Nutzung bleibt beim Chatten in der Seitenleiste sichtbar.",
+    },
+    chat_preferences: {
+      title: "Chat-Einstellungen",
+      description:
+        "Diese Einstellungen gelten für alle Unterhaltungen auf diesem Gerät.",
+      memory: {
+        label: "Erinnerungen",
+        description:
+          "Legen Sie fest, wie Chat AI Ihre gespeicherten Erinnerungen verwendet.",
+        help_label: "Mehr über Erinnerungen erfahren",
+        options: {
+          none: {
+            label: "Keine",
+            description: "Gespeicherte Erinnerungen werden nicht verwendet.",
+          },
+          recall: {
+            label: "Abrufen",
+            description:
+              "Gespeicherte Erinnerungen werden für persönlichere Antworten verwendet.",
+          },
+          learn: {
+            label: "Lernen",
+            description:
+              "Erinnerungen werden verwendet und um relevante neue Details ergänzt.",
+          },
+        },
+      },
+      suggestions: {
+        section_label: "Vorschläge",
+        label: "Folgevorschläge anzeigen",
+        description:
+          "Zeigt nach jeder Antwort passende Vorschläge zum Fortsetzen des Chats.",
+        help_label: "Mehr über Folgevorschläge erfahren",
+      },
+    },
+    default_model: {
+      title: "Standardmodell",
+      current: "Aktuell: {{currentModel}}",
+      description: "Wählen Sie das Standardmodell für neue Gespräche aus.",
+      list_label: "Verfügbare Standardmodelle",
+    },
+    timeout: {
+      title: "Wartezeit für Antworten",
+      description: "Bestimmen Sie, wie lange auf KI-Antworten gewartet wird.",
+      seconds: "Wartezeit (Sekunden)",
+      seconds_short: "Sek.",
+      range: "Bereich: 5-900 Sekunden",
+    },
+    data: {
+      title: "Daten verwalten",
+      description:
+        "Exportieren Sie eine Kopie Ihrer lokalen Daten oder entfernen Sie Unterhaltungen, Erinnerungen, Einstellungen und Anhänge dauerhaft aus diesem Browser.",
+      export_success: "Lokale Daten wurden erfolgreich exportiert.",
+      export_error: "Lokale Daten konnten nicht exportiert werden.",
+    },
+    clear_data_button: "Daten löschen",
+    import_data_button: "Daten importieren",
+    export_data_button: "Daten exportieren",
+    memory: {
+      title: "Erinnerungen",
+      description:
+        "Verwalten Sie Ihre persönlichen Erinnerungen, die der KI helfen, wichtige Details über Sie zu behalten. Sie haben derzeit {{count}} Erinnerungen gespeichert.",
+      manage: "Erinnerungen verwalten",
+    },
+    logout: "Abmelden",
+  },
+  // Import Persona Modal
+  persona: {
+    selectPersona: "Persona auswählen",
+    browsePersonas: "KI-Personas durchsuchen und importieren",
+    personas: "Personas",
+    back: "Zurück",
+    errorLoading: "Fehler beim Laden der Personas",
+    retry: "Erneut versuchen",
+    noPersonas: "Keine Personas in diesem Ordner gefunden",
+    configuration: "Persona-Konfiguration",
+    folder: "Ordner",
+    createOwn: "Eigene erstellen",
+    importFromClipboard: "Aus Zwischenablage",
+    importFromClipboardErrorInvalidJson:
+      "Import aus Zwischenablage fehlgeschlagen. Kein gültiges JSON gefunden.",
+    importFromClipboardErrorInvalidPersona:
+      "Import aus Zwischenablage fehlgeschlagen. Ungültige Persona-Daten.",
+    personaLibrary: "Persona-Bibliothek",
+    categories: "Kategorien",
+    quickImport: "Schnellimport",
+    selectFolder: "Keine Kategorie ausgewählt",
+    selectFolderDescription:
+      "Wählen Sie eine Kategorie aus der Seitenleiste, um Personas anzuzeigen",
+    emptyFolder: "Dieser Ordner ist leer",
+    categoryCount: "{{folders}} Kategorien • {{files}} Personas",
+  },
+  // Memory Modal
+  memory: {
+    userMemory: "Erinnerungen",
+    memoryCount_one: "{{count}} Erinnerung gespeichert",
+    memoryCount_other: "{{count}} Erinnerungen gespeichert",
+    addNew: "Neue Erinnerung hinzufügen",
+    add: "Hinzufügen",
+    savedMemories: "Gespeicherte Erinnerungen",
+    deleteAll: "Alle löschen",
+    noMemories: "Noch keine Erinnerungen gespeichert.",
+    addFirst: "Fügen Sie oben Ihre erste Erinnerung hinzu!",
+    save: "Speichern",
+    cancel: "Abbrechen",
+    created: "Erstellt: {{date}}",
+    edit: "Bearbeiten",
+    delete: "Löschen",
+    clearAllTitle: "Alle Erinnerungen löschen",
+    clearAllWarning:
+      "Sind Sie sicher, dass Sie alle {{count}} Erinnerungen löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden und entfernt dauerhaft alle Ihre gespeicherten Erinnerungen.",
+    warningTitle: "Warnung",
+    warningText:
+      "Sie verlieren alle persönlichen Erinnerungen, die der KI helfen, Ihre Präferenzen und Ihren Kontext zu verstehen. Erwägen Sie, sie zuerst zu exportieren, falls erforderlich.",
+    dontShowAgain: "Diese Warnung nicht mehr anzeigen",
+    clearAll: "Alle Erinnerungen löschen ({{count}})",
+  },
+  // Export Conversation Modal
+  export_conversation: {
+    title: "Exportoptionen",
+    json: "JSON-Datei",
+    pdf: "PDF-Datei",
+    text: "TXT-Datei",
+    export: "Exportieren",
+    export_settings: "Modell und Optionen einbeziehen",
+    export_files: "Dateien einbeziehen",
+    export_arcana: "Arcana-Details einbeziehen",
+    export_mcp_servers: "MCP-Server einbeziehen",
+  },
+  // Rename Conversation Modal
+  rename_conversation: {
+    title: "Chat umbenennen",
+    enter_name: "Chat-Titel eingeben",
+    alert_empty: "Titel ist erforderlich",
+  },
+  // Delete Conversation Modal
+  delete_conversation: {
+    title: "Chat löschen",
+    description: "Sind Sie sicher, dass Sie diesen Chat löschen möchten?",
+  },
+  // Share Settings Modal
+  share_settings: {
+    description:
+      "Mit dieser Funktion wird ein Link erstellt, der Ihr Modell, den Systemprompt und Ihre Einstellungen (einschließlich Tool-Konfiguration) enthält. Jeder Benutzer, der diesen Link öffnet, kann dieselbe Konfiguration in seinen eigenen Unterhaltungen verwenden. Ihr Gesprächsverlauf wird nicht freigegeben.",
+    warn_arcana:
+      "Warnung: Die Weitergabe von arcana-Details kann die in arcana hochgeladenen Daten gefährden.",
+    warn_mcp:
+      "Warnung: Die Weitergabe eines MCP-Servers kann dazu führen, dass Eingaben oder Daten beim Einsatz von MCP an diesen Server gesendet werden.",
+  },
+  // Help modals
+  help: {
+    title: "Hilfe",
+    choiceproposer:
+      "Wenn diese Option aktiviert ist, zeigt Chat AI nach jeder Antwort passende Folgevorschläge an. Diese Einstellung gilt für alle Unterhaltungen auf diesem Gerät.",
+    arcana:
+      "Arcana ist eine einzigartige Funktion unseres Dienstes, die das LLM mit spezialisiertem Wissen ausstattet. Wenn Sie eine gültige Arcana-ID und den entsprechenden Schlüssel eingeben, erhält das LLM Zugriff auf das in dieser Arcana enthaltene Wissen. Dies ermöglicht es dem Modell, Antworten zu generieren, die besser informiert und relevanter für Ihre Bedürfnisse sind. Lassen Sie das Feld für die ID leer, um das Modell ohne spezialisiertes Wissen zu verwenden.",
+    mcp: "Bitte geben Sie die URL Ihres MCP (Model Context Protocol) Servers ein (z. B. https://...). Der MCP-Server ist ein Dienst, der der Chat-AI zusätzliche Werkzeuge, Datenquellen oder Verarbeitungskapazitäten bereitstellen kann, die über ihr eingebautes Wissen hinausgehen. Durch die Verbindung mit dem angegebenen MCP-Server kann die KI mit externen Systemen interagieren, aktuelle oder spezialisierte Informationen abrufen und benutzerdefinierte Aufgaben entsprechend den angebotenen Funktionen ausführen.",
+    models:
+      "Chat AI bietet Zugriff auf eine Palette von state-of-the-art Large Language Models (LLMs), jedes mit eigenen Fähigkeiten und Leistungsmerkmalen. Dies ermöglicht es Ihnen, den Modelltyp auszuwählen, der am besten Ihren Forschungszielen und Anforderungen entspricht.\
+      Größere Modelle bieten typischerweise höhere Antwortqualitäten, aber haben aufgrund ihrer erhöhten Komplexität längere Antwortzeiten. Umgekehrt bieten kleinere Modelle schnellere Antwortzeiten, mögen jedoch einige Genauigkeit und Tiefe opfern. Mit der Liste der verfügbaren Modelle können Sie Abwägungen zwischen Antwortqualität und Geschwindigkeit treffen, um Ihren spezifischen Bedürfnissen gerecht zu werden. Für weitere Einzelheiten",
+    reasoning:
+      "Die Reasoning-Einstellung bestimmt, wie tief das Modell Informationen verarbeitet und analysiert, bevor es eine Antwort generiert. Ein höherer Reasoning-Aufwand bedeutet, dass das Modell mehr Zeit darauf verwendet, den Kontext sorgfältig zu prüfen, mögliche Interpretationen abzuwägen und seinen internen Denkprozess zu verfeinern, um eine präzisere, differenziertere und besser strukturierte Antwort zu erzeugen. Ein niedrigerer Reasoning-Aufwand priorisiert Geschwindigkeit über Tiefe, was zu schnelleren, aber möglicherweise weniger gründlichen Antworten führt. Passen Sie diese Einstellung an, je nachdem, ob Sie schnelle Antworten oder sorgfältig ausgearbeitete, hochwertige Ergebnisse benötigen.",
+    memory:
+      "Erinnerungen sind eine globale Einstellung für alle Unterhaltungen auf diesem Gerät. 'Keine' verwendet keine gespeicherten Erinnerungen. 'Abrufen' nutzt gespeicherte Erinnerungen für persönlichere Antworten. 'Lernen' speichert zusätzlich relevante neue Details aus Ihren Unterhaltungen. Erinnerungen werden ausschließlich in Ihrem Browser gespeichert.",
+    system_prompt:
+      "Der Systemprompt ist ein spezieller Befehl oder eine Anweisung, die zu Beginn eines Gesprächs gegeben wird, um den Ton, den Kontext oder die Einschränkungen für unsere Interaktion festzulegen. Damit wird das Verhalten des Modells gelenkt und sichergestellt, dass es auf hilfreiche und angemessene Weise reagiert.",
+    temperature:
+      "Eine niedrige Temperatur (z. B. 0-1) erzeugt vorhersehbarere und logischere Antworten, während höhere Temperaturen (z. B. über 1) die Möglichkeit kreativerer und unkonventionellerer Antworten erhöhen. Sie können die Temperatureinstellung anpassen, um verschiedene Stufen der Vorhersagbarkeit und Kreativität zu erreichen.",
+    tools:
+      "Tools sind eine neue und experimentelle Funktion, die darauf ausgelegt ist, die Fähigkeiten von Chat-AI zu erweitern. Sie ermöglichen dem Modell, zusätzliche Aktionen auszuführen oder auf weitere Ressourcen zuzugreifen, um nützlichere, genauere oder spezialisierte Antworten zu liefern. Zu den aktuellen Tools gehören Arcana (für alle Modelle) und Websuche (optional); weitere Tools sind für die Zukunft geplant. Da sich diese Funktion noch in Entwicklung befindet, können sich Funktionsumfang und verfügbare Tools im Laufe der Zeit ändern.",
+    web_search:
+      "Das Websuche-Werkzeug ermöglicht es der KI, aktuelle Informationen aus dem Internet abzurufen, um ihre Antworten zu verbessern. Wenn es aktiviert ist, kann die KI auf Grundlage Ihrer Frage und des gesamten Gesprächsverlaufs Suchanfragen erstellen, diese an eine Suchmaschine (wie z. B. Google) senden und die erhaltenen Ergebnisse nutzen, um genauere und aktuellere Antworten zu geben. Dies ist besonders nützlich bei Themen, bei denen aktuelle oder sich schnell ändernde Informationen wichtig sind.",
+    top_p:
+      "top_p ist ein Schieberegler von 0 bis 1, der den Gesamtbestand der Wahrscheinlichkeiten anpasst, die für das nächste Token in Betracht gezogen werden. Ein top_p von 0,1 würde bedeuten, dass nur die oberen 10% der kumulativen Wahrscheinlichkeiten berücksichtigt werden. Die Variation von top_p hat einen ähnlichen Effekt auf Vorhersagbarkeit und Kreativität wie die Temperatur.",
+  },
+  model_selector: {
+    change_model: "Modell wechseln",
+    docs_hint_text: "Unsicher, welches Modell Sie wählen sollen?",
+    docs_hint_link: "Lesen Sie die Modellübersicht.",
+    scope_filter: "Modelle filtern",
+    scope_all: "Alle Modelle",
+    scope_internal: "Nur interne",
+    scope_external: "Nur externe",
+  },
+  // Tour
+  tour: {
+    welcome_message: "Willkommen bei Chat AI",
+    start_tour: "Tour starten",
+    skip_tour: "Tour überspringen",
+    description:
+      "Klicken Sie auf die Schaltfläche unten, um die geführte Tour zu starten und die neue Benutzeroberfläche zu erkunden.",
+    prompt: 
+      "Geben Sie hier einfach Ihre Nachricht ein, um die Unterhaltung mit Chat AI zu starten. Sie können Dateien anhängen; das Modell wird sie verwenden, sofern der Dateityp unterstützt wird.",
+    model:
+      "Hier können Sie das Modell auswählen, mit dem Sie chatten möchten. Jedes Modell hat seine eigenen Eigenschaften, Fähigkeiten und Einschränkungen.", 
+    sidebar:
+      "Hier können Sie Unterhaltungen erstellen, löschen, importieren, exportieren, durchsuchen und zwischen ihnen wechseln. Organisieren Sie Ihre Unterhaltungen in Themen und chatten Sie auf Wunsch mit vordefinierten Personas.",
+    settings:
+      "Hier können Sie unterhaltungsspezifische Einstellungen wie System-Prompt, Temperatur, Top_p und GWDG-Tools wie Arcana, Bildgenerierung und Websuche anpassen. Tools funktionieren möglicherweise nicht mit allen Modellen.",
+    profile:
+      "Diese Schaltfläche öffnet Ihr Benutzerprofil, in dem Sie Ihre Einstellungen festlegen, gespeicherte Erinnerungen verwalten sowie Ihre Daten exportieren oder löschen können.",
+    interface:
+      "In dieser Ecke können Sie das Design und die Sprache von Chat AI wechseln.",
+    memory: {
+      off: "Memory - None: Chat AI erinnert sich an nichts aus früheren Gesprächen, wie zuvor.",
+      recall:
+        "Recall: Chat AI kann relevante Erinnerungen über Sie aus früheren Gesprächen nutzen, erinnert sich aber an nichts aus dem aktuellen Gespräch.",
+      on: "Learn: Chat AI lernt aktiv Dinge über Sie aus dem aktuellen Gespräch und ruft auch Erinnerungen ab, die sie zuvor gesammelt hat.",
+      settings:
+        "Sie können Erinnerungen jederzeit im Benutzerprofil-Panel in der oberen rechten Ecke ansehen, hinzufügen, bearbeiten und entfernen. Erinnerungen werden nur lokal in Ihrem Browser gespeichert.",
+    },
+    back: "Zurück",
+    close: "Schließen",
+    last: "Fertigstellen",
+    next: "Weiter",
+    skip: "Überspringen",
+  },
+  // Alerts and warnings
+  alert: {
+    title: "Warning",
+    bad_request:
+      "Fehlerhafte Anfrage wurde gesendet: Bitte löschen Sie die Konversation, versuchen Sie es innerhalb des Limits erneut, und speichern Sie Ihren Chatverlauf für spätere Zwecke.",
+    clear_data: "Achtung! Die Löschung löscht Ihren Verlauf. Fortfahren?",
+    clear_messages:
+      "Sind Sie sicher, dass alle Nachrichten gelöscht werden sollen?",
+    regenerate_confirm:
+      "Beim Regenerieren werden diese Antwort und alle nachfolgenden Nachrichten gelöscht und die aktuellen Einstellungen angewendet. Dies kann nicht rückgängig gemacht werden. Um diese Unterhaltung zu behalten, verwenden Sie stattdessen „In neuem Chat fortfahren“.",
+    regenerate_yes: "Regenerieren",
+    fork_confirm:
+      "Die Unterhaltung wird bis zu dieser Nachricht in einen neuen Chat kopiert. Die aktuelle Unterhaltung bleibt unverändert, Sie können also eine andere Antwort oder andere Einstellungen ausprobieren, ohne etwas zu verlieren.",
+    fork_yes: "Kopie erstellen",
+    regenerate_fork: "Kopie",
+    regenerate_fork_success: "Chat erfolgreich geforkt",
+    regenerate_fork_fail: "Chat konnte nicht geforkt werden.",
+    summarize_replace:
+      "Dies ersetzt den aktuellen Chatverlauf durch eine Zusammenfassung. Die bisherigen Nachrichten werden aus dieser Unterhaltung entfernt. Fortfahren?",
+    summarize_in_progress:
+      "Ihre Unterhaltung wird zusammengefasst. Bitte warten Sie, während die Zusammenfassung erstellt wird.",
+    no: "Nein, geh zurück",
+    yes: "Ja, alles löschen",
+    system_prompt_empty: "System-Prompt ist leer. Modell reagiert evtl. nicht.",
+    data_security_warning: 
+      "Sie verwenden ein externes Modell oder externe Tools. Ihre Nachrichten können außerhalb der GWDG verarbeitet werden. Benutzerdefinierte Einstellungen und GWDG-Tools sind möglicherweise nicht verfügbar. Bitte unterlassen Sie die Eingabe vertraulicher oder personenbezogener Daten.",
+    data_security_warning_mpg:
+      "Sie verwenden ein externes Modell oder externe Tools. Ihre Nachrichten können außerhalb der GWDG verarbeitet werden. Benutzerdefinierte Einstellungen und GWDG-Tools sind möglicherweise nicht verfügbar. Bitte unterlassen Sie die Eingabe vertraulicher oder personenbezogener Daten. Externe Modelle sind nur nutzbar für wissenschaftliche Beschäftigte für wissenschaftliche Arbeiten, sofern keine personenbezogenen Daten eingegeben werden.",
+    data_security_notice: "Ihre Daten werden sicher innerhalb unserer Server verarbeitet. Es werden keine Informationen außerhalb der GWDG übertragen.",
+    arcana_usage:
+      "Halten Sie Temperatur auf 0 und top_p auf 0.05 für optimale Arcana-Ergebnisse",
+    arcana_create_collection_prefix:
+      "Erstellen Sie Ihre eigene Dokumentensammlung",
+    arcana_create_collection_link: "hier",
+    web_search_usage:
+      "PRIVACY WARNUNG: Ihr Verlauf kann an eine Suchmaschine (z. B. Google) gesendet werden",
+    mcp_usage:
+      "PRIVACY WARNUNG: Ihre Daten können an externe Server gesendet werden.",
+    arcana_export:
+      "Warnung: Das Exportieren von Arcana-Details in eine Datei kann Ihre privaten Daten gefährden, da sie für andere zugänglich sind.",
+    mcp_export:
+      "Warnung: Das Exportieren von MCP-Serverdaten in eine Datei kann externe Endpunkte offenlegen und dazu führen, dass Daten an Drittanbieter-Server gesendet werden.",
+    model_offline:
+      "Das von Ihnen ausgewählte Modell ist derzeit offline. Durch das Anklicken von OK unten startet das Modell und wird in wenigen Minuten online sein. In der Zwischenzeit können Sie gerne ein anderes Modell auswählen.",
+    session_expired:
+      "Ihre Sitzung ist abgelaufen. Bitte aktualisieren Sie die Webseite.",
+    unsent_files:
+      "Sie haben Dateien angehängt, die verloren gehen werden. Sind Sie sicher, dass Sie gehen wollen?",
+    unprocessed_files:
+      "Bitte verarbeiten oder entfernen Sie das beigefügte PDF, um fortzufahren.",
+    migrate_data:
+      "Es sieht so aus, als ob Sie eine ältere Version von Chat AI verwenden. Um fortzufahren, müssen Ihre vorherigen Gespräche und Daten aktualisiert werden. Bitte sichern Sie Ihre Daten zuerst, falls erforderlich, und drücken Sie dann auf 'Aktualisieren', um den Prozess zu starten.",
+    // Hallucination warning
+    hallucination: {
+      note1: "Hinweis: Chatbots sind anfällig für",
+      note2: "und ihre Antworten sollten nicht als korrekt angesehen werden.",
+      note3: "Halluzination",
+    },
+    // External models
+    settings_external:
+      "Diese Einstellungen wirken sich nicht auf externe (OpenAI) Modelle aus.",
+    import_settings_title: "Importierte Einstellungen prüfen",
+    import_settings_intro:
+      "Dieser geteilte Einstellungs-Link enthält Optionen, die Teile Ihrer Unterhaltung an externe Dienste senden können. Wählen Sie aus, was importiert werden soll.",
+    import_web_search_disclaimer:
+      `Wenn die Websuche aktiviert ist, kann die KI auf Grundlage Ihrer Nachricht und des Gesprächsverlaufs Suchanfragen erstellen und diese an eine Suchmaschine (z. B. Google) senden.\n\nErlauben Sie dies nur, wenn Sie damit einverstanden sind, dass Ihre Daten extern verarbeitet werden, und wenn Sie während der aktiven Websuche keine vertraulichen, persönlichen oder sensiblen Informationen teilen.`,
+    import_mcp_disclaimer:
+      `MCP-Server können außerhalb der GWDG betrieben werden. Wenn aktiviert, kann die KI Daten an konfigurierte MCP-Server senden, um Tool-Anfragen auszuführen.\n\nErlauben Sie dies nur, wenn Sie den konfigurierten MCP-Servern vertrauen und keine vertraulichen, persönlichen oder sensiblen Informationen mit ihnen teilen.`,
+    web_search_disclaimer: `Wenn die Websuche aktiviert ist, kann die KI auf Grundlage Ihrer Nachricht und des gesamten Gesprächsverlaufs Suchanfragen erstellen und diese an eine Suchmaschine (z. B. Google) senden, um aktuelle Informationen abzurufen. Dies hilft, genauere und aktuellere Antworten bereitzustellen.\n\nDurch Klicken auf „Ich verstehe“ stimmen Sie zu, dass Ihre Eingaben auf diese Weise verarbeitet werden, und bestätigen, dass Sie während der aktiven Websuche keine vertraulichen, persönlichen oder sensiblen Informationen teilen.`,
+  },
+  // Landing page
+  landing: {
+    title: "Sie sind nicht angemeldet",
+    description: "Bitte melden Sie sich an, um Chat AI zu verwenden.",
+    reasonsTitle: "Sie können sich anmelden, wenn Sie:",
+    reasons: {
+      deleted:
+        "• Mitglied einer deutschen Universität oder Forschungseinrichtung sind",
+      outdatedLink: "• Mitglied einer Organisation im DFN sind",
+      incorrectId: "• ein registrierter Benutzer in AcademicCloud sind",
+      historyCleared: "• von der GWDG Zugriff gewährt wurde",
+    },
+    reassurance: "Verwenden Sie einfach den Button unten, um sich anzumelden.",
+    buttonText: "Anmelden mit AcademicCloud SSO",
+  },
+  not_found: {
+    title: "404: Unterhaltung nicht gefunden",
+    description:
+      "Ups! Sie versuchen auf eine Unterhaltung zuzugreifen, die in Ihrem Chatverlauf nicht existiert.",
+    reasonsTitle: "Dies kann folgende Gründe haben:",
+    reasons: {
+      deleted: "• Die Unterhaltung wurde gelöscht",
+      outdatedLink: "• Sie verwenden einen veralteten oder ungültigen Link",
+      incorrectId: "• Die Unterhaltungs-ID in der URL ist falsch",
+      historyCleared: "• Ihr Chatverlauf wurde gelöscht",
+    },
+    reassurance:
+      "Keine Sorge! Sie können eine neue Unterhaltung starten, indem Sie auf den Button unten klicken.",
+    buttonText: "Zum Chat gehen",
+  },
+  // Announcement
+  announcement: "",
+};

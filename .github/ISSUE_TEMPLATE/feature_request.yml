@@ -1,0 +1,36 @@
+name: Feature 
+description: Suggest a new feature or improvement for this project
+title: "[Feature] "
+labels: [feature]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature to improve this project. Please fill out the form below to help us understand your idea.
+
+  - type: textarea
+    attributes:
+      label: Feature description
+      description: Clearly describe the feature or enhancement you are requesting.
+      placeholder: "I would like the system to..."
+
+  - type: textarea
+    attributes:
+      label: Use case or problem
+      description: What problem would this solve? Why is this feature useful?
+      placeholder: "Currently, I have to..."
+
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any links, mockups, or references to existing features that are relevant.
+      placeholder: "See also issue #123, or this design..."
+
+  - type: checkboxes
+    attributes:
+      label: Confirmation
+      description: "Please confirm the following before submitting:"
+      options:
+        - label: I have searched existing issues for this feature
+        - label: I have described why this feature would be helpful
+        - label: I am willing to help implement this feature (optional)

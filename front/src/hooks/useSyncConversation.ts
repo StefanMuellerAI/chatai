@@ -1,0 +1,565 @@
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { getConversation, updateConversation } from "../db";
+
+import type { HydratedConversation } from "../db/dbTypes";
+
+import { selectLastConversation } from "../Redux/reducers/lastConversationSlice.jsx";
+
+import { createConversation, getConversationMeta, getLastModifiedConversationMeta } from "../db/index";
+
+import { validate as validateUUID, version as versionUUID } from "uuid";
+import { useModal } from "../modals/ModalContext";
+import { selectUserSettings } from "../Redux/reducers/userSettingsReducer";
+import { getDefaultConversation } from "../utils/conversationUtils";
+import { useImportConversation } from "./useImportConversation";
+import { decodeBase64UrlUtf8 } from "../utils/base64url";
+function validateConversationId(conversationId: string): boolean {
+  return validateUUID(conversationId) && versionUUID(conversationId) === 4;
+}
+
+function isPlainObject(value: unknown): value is Record<string, any> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function hasImportedWebSearchEnabled(settings: any): boolean {
+  if (!settings || typeof settings !== "object") return false;
+  const tools = isPlainObject(settings.tools) ? settings.tools : {};
+  const legacyEnableWebSearch = settings.enable_web_search === true;
+  return legacyEnableWebSearch || tools.web_search === true || tools.fetch_url === true;
+}
+
+function hasImportedMcpServers(settings: any): boolean {
+  if (!settings || typeof settings !== "object") return false;
+  const mcpServers = settings.mcp_servers;
+  if (typeof mcpServers === "string") return mcpServers.trim().length > 0;
+  if (Array.isArray(mcpServers)) return mcpServers.length > 0;
+  return false;
+}
+
+function coerceBoolean(value: any): boolean | undefined {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalized = value.toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return undefined;
+}
+
+function coerceFiniteNumber(value: any): number | undefined {
+  const num = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(num) ? num : undefined;
+}
+
+async function loadConversation(navigate, conversationId, lastConversationId, userSettings = {}, sharedSettings = null, importURL = null, importConversation = null, searchParams = null): Promise<HydratedConversation | undefined> {
+  // Handle import URL
+  if (importURL) {
+    try {
+        const response = await fetch(importURL);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        await importConversation(data); // Import and navigate to new conversationId
+    } catch (error) {
+        console.error("Failed to import from URL:", error);
+    }
+    return;
+  }
+
+  // If conversationId in URL, try to use it
+  if (conversationId) {
+    // Check if Id is valid UUID
+    if(!validateConversationId(conversationId)) {
+      console.error("Invalid conversation: ", conversationId);
+      navigate("/notfound");
+      return undefined
+    }
+
+    // if valid UUID, try to load from dexie
+    try {
+      const conversation = await getConversation(conversationId);
+      if (!conversation) {
+        console.log("Conversation ", conversationId, " not found");
+        navigate(`/notfound`);
+        return undefined
+      }
+      console.log("Loaded conversation, ", conversation.id);
+      return conversation;
+    } catch (error) {
+      console.log("Conversation ", conversationId, " could not be loaded: ", error);
+    }
+  }
+
+  // No conversationId in URL, must navigate
+  let targetConversationId = null;
+  
+  // If no settings are in the URL -> reload earlier conversation
+  if (!(sharedSettings || searchParams?.toString())) {
+    // Attempt to reuse earlier conversation
+    if (lastConversationId) {
+      // if lastConversationId exists in redux, try to load from dexie
+      try {
+        const conversation = await getConversation(lastConversationId);
+        if (!conversation) console.log("Last conversation ", lastConversationId, " not found");
+        else targetConversationId = lastConversationId;
+      } catch (error) {
+        // on error try further
+      }
+    }
+    // If not working, try using last modified conversation 
+    if (!targetConversationId) {
+      const lastConversationMeta = await getLastModifiedConversationMeta();
+      if (lastConversationMeta !== undefined && lastConversationMeta?.id) {
+        try {
+          const conversation = await getConversation(lastConversationMeta.id);
+          if (!conversation) console.log("Most recent conversation ", lastConversationMeta.id, " not found");
+          else targetConversationId = lastConversationMeta.id;
+        } catch (error) {
+          // on error try further
+        }
+      }
+    }
+  } else {
+    console.log("Found search params or settings")
+  }
+
+  // If URL in settings or no earlier conversation, create a new conversation
+  if (!targetConversationId) {
+    try {
+      console.log("No target conversation, creating new one")
+      const newConversationId = await createConversation(getDefaultConversation(userSettings));
+      targetConversationId = newConversationId
+    } catch (error) {
+      // on error try further
+    }
+  }
+
+  // If succesfull, navigate to new conversation and retain params
+  if (targetConversationId) {
+    console.log("Navigating to ", targetConversationId)
+    let targetPath = `/chat/${targetConversationId}`;
+    if (sharedSettings) targetPath += `?settings=${sharedSettings}`;
+    else if (searchParams && searchParams.toString()) {
+        // Preserve existing search parameters
+        targetPath += `?${searchParams.toString()}`;
+    }
+    navigate(targetPath);
+    return null;
+  }
+
+  // If everything fails, go to not found
+  navigate("/notfound");
+  console.error("Could not load any conversation");
+  return null;
+}
+
+function decodeSettings(base64Settings) {
+  // New format: base64url(utf8(JSON)) with raw (un-URL-encoded) strings.
+  try {
+    const jsonString = decodeBase64UrlUtf8(base64Settings);
+    const settings = JSON.parse(jsonString);
+    if (settings && typeof settings === "object") return settings;
+  } catch {
+    // Fall through to legacy decoder for older shared links.
+  }
+
+  // Legacy format: base64(JSON) where string values were encodeURIComponent'd.
+  try {
+    const jsonString = atob(String(base64Settings).replace(/\s/g, "+"));
+    const settings = JSON.parse(jsonString);
+    function decodeURIComponentDeep(obj) {
+      if (typeof obj === "string") return decodeURIComponent(obj);
+      if (Array.isArray(obj)) return obj.map(decodeURIComponentDeep);
+      if (obj !== null && typeof obj === "object") {
+        return Object.fromEntries(
+          Object.entries(obj).map(([k, v]) => [k, decodeURIComponentDeep(v)])
+        );
+      }
+      return obj;
+    }
+    return decodeURIComponentDeep(settings);
+  } catch (err) {
+    console.warn("Failed to read settings", err);
+    return {};
+  }
+}
+
+export function useSyncConversation({
+  localState,
+  setLocalState,
+  conversationId,
+}: {
+  localState: any;
+  setLocalState: (state: any) => void;
+  conversationId: string;
+  sharedSettings: string | null,
+  importURL: string | null,
+}) {
+  const navigate = useNavigate();
+  const lastConversationId = useSelector(selectLastConversation);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sharedSettings = searchParams.get("settings");
+  const importURL = searchParams.get("import");
+  const importConversation = useImportConversation();
+  const migrationData = useSelector(state => state.migration_data);
+
+  const { openModal } = useModal();
+
+  // State if tab is active or not
+  const [isActive, setIsActive] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const userSettings = useSelector(selectUserSettings);
+
+  const timeoutIds = useRef({});
+  const lastModified = useRef({});
+  const delay = 600;
+  const latestStateRef = useRef<Record<string, any>>({});
+  const saveInFlight = useRef(false);
+  const needsRetry = useRef(false);
+  const importDisclaimerDecisions = useRef(new Map<string, any>());
+
+  // Effect 1: Try to load conversation on mount
+  useEffect(() => {
+    // Open modal for backup
+    if (migrationData && Object.entries(migrationData).length > 0) {
+      openModal("migrate");
+    }
+    (async () => {
+      if (sharedSettings) {
+        const decodedForDisclaimer = decodeSettings(sharedSettings);
+        const hasWebSearch = hasImportedWebSearchEnabled(decodedForDisclaimer);
+        const hasMcpServers = hasImportedMcpServers(decodedForDisclaimer);
+        const needsDisclaimer = hasWebSearch || hasMcpServers;
+
+        if (needsDisclaimer && !importDisclaimerDecisions.current.has(sharedSettings)) {
+          const decision = await new Promise((resolve) => {
+            openModal("importSettingsDisclaimer", {
+              hasWebSearch,
+              hasMcpServers,
+              onResolve: resolve,
+            });
+          });
+          importDisclaimerDecisions.current.set(sharedSettings, decision);
+        }
+
+        const decision = importDisclaimerDecisions.current.get(sharedSettings);
+        if (decision?.action === "cancel") {
+          setSearchParams();
+          const conversation = await loadConversation(
+            navigate,
+            conversationId,
+            lastConversationId,
+            userSettings,
+            null,
+            null,
+            importConversation,
+            null
+          );
+          if (conversation) setLocalState(conversation);
+          return;
+        }
+      }
+
+      const conversation = await loadConversation(navigate, conversationId, lastConversationId, userSettings, sharedSettings, importURL, importConversation, searchParams);
+      if (!conversation) return; // will navigate to a valid conversation soon
+      lastModified.current[conversationId] = conversation?.lastModified || 0;
+      if (sharedSettings) {
+        // Decode and set settings from base64 string in URL
+        const decodedSettings = decodeSettings(sharedSettings);
+
+        const hasWebSearch = hasImportedWebSearchEnabled(decodedSettings);
+        const hasMcpServers = hasImportedMcpServers(decodedSettings);
+
+        if ((hasWebSearch || hasMcpServers) && !importDisclaimerDecisions.current.has(sharedSettings)) {
+          const decision = await new Promise((resolve) => {
+            openModal("importSettingsDisclaimer", {
+              hasWebSearch,
+              hasMcpServers,
+              onResolve: resolve,
+            });
+          });
+          importDisclaimerDecisions.current.set(sharedSettings, decision);
+        }
+
+        const decision = importDisclaimerDecisions.current.get(sharedSettings);
+        if (decision?.action === "cancel") {
+          setSearchParams();
+          setLocalState(conversation);
+          return;
+        }
+
+        const shouldImportWebSearch =
+          !hasWebSearch
+            ? true
+            : decision?.action === "allow"
+            ? decision.allowWebSearch !== false
+            : decision?.action === "disallow"
+            ? false
+            : true;
+
+        const shouldImportMcpServers =
+          !hasMcpServers
+            ? true
+            : decision?.action === "allow"
+            ? decision.allowMcpServers !== false
+            : decision?.action === "disallow"
+            ? false
+            : true;
+
+        const system_prompt =
+          decodedSettings?.system_prompt ||
+          decodedSettings?.systemPrompt ||
+          conversation?.messages?.[0]?.content?.[0]?.text ||
+          "";
+
+        const importedToolsRaw = isPlainObject(decodedSettings?.tools) ? decodedSettings.tools : {};
+        const importedTools: any = { ...importedToolsRaw };
+
+        if (!shouldImportWebSearch) {
+          delete importedTools.web_search;
+          delete importedTools.fetch_url;
+        }
+
+        if (!shouldImportMcpServers) {
+          delete importedTools.mcp;
+        }
+
+        const nextTools: any = {
+          ...(conversation.settings?.tools || {}),
+          ...importedTools,
+        };
+
+        if (decodedSettings?.enable_web_search === true && shouldImportWebSearch) {
+          nextTools.web_search = true;
+          nextTools.fetch_url = true;
+        }
+
+        const nextSettings: any = { ...conversation.settings };
+
+        if (decodedSettings?.model != null) {
+          nextSettings.model =
+            typeof decodedSettings.model === "string"
+              ? { id: decodedSettings.model }
+              : decodedSettings.model;
+        }
+
+        const temperature = coerceFiniteNumber(decodedSettings?.temperature);
+        if (temperature !== undefined) nextSettings.temperature = temperature;
+
+        const topP = coerceFiniteNumber(decodedSettings?.top_p);
+        if (topP !== undefined) nextSettings.top_p = topP;
+
+        const enableTools = coerceBoolean(decodedSettings?.enable_tools);
+        if (enableTools !== undefined) nextSettings.enable_tools = enableTools;
+
+        const reasoningEffort = decodedSettings?.reasoning_effort;
+        if (reasoningEffort !== undefined) nextSettings.reasoning_effort = reasoningEffort;
+
+        if (decodedSettings?.arcana && typeof decodedSettings.arcana === "object") {
+          const arcanaId = decodedSettings.arcana?.id;
+          if (typeof arcanaId === "string") {
+            nextSettings.arcana = { ...(nextSettings.arcana || {}), id: arcanaId };
+          }
+        }
+
+        if (hasMcpServers && shouldImportMcpServers) {
+          const mcpServers = decodedSettings?.mcp_servers;
+          if (typeof mcpServers === "string" || Array.isArray(mcpServers)) {
+            nextSettings.mcp_servers = mcpServers;
+          }
+        }
+
+        nextSettings.tools = nextTools;
+
+        const updatedConversation = {
+          ...conversation,
+          messages: [
+            {"role": "system", "content": [{"type": "text", "text": system_prompt}]},
+            ...conversation.messages.slice(1),
+          ],
+          settings: nextSettings
+        }
+        setSearchParams();
+        setLocalState( updatedConversation );
+        // Persist imported settings immediately so they are retained when switching chats.
+        try {
+          const baseLastModified = conversation?.lastModified ?? 0;
+          const newLastModified = await updateConversation(conversation.id, {
+            title: updatedConversation.title,
+            settings: updatedConversation.settings,
+            messages: updatedConversation.messages,
+            lastModified: baseLastModified,
+          });
+          if (newLastModified !== -1) {
+            lastModified.current[conversation.id] = newLastModified;
+          }
+        } catch (error) {
+          console.error("Failed to persist imported settings:", error);
+        }
+        return;
+      }
+      if (searchParams?.size > 0) {
+        // Set settings from query params in URL
+        const arcanaParam = searchParams.get("arcana");
+        const modelParam = searchParams.get("model");
+        const enableToolsParam = searchParams.get("enable_tools")
+        
+        let extraSettings = {};
+        if (arcanaParam) { extraSettings.arcana = { id: arcanaParam }; };
+        if (modelParam) { extraSettings.model = { id: modelParam }; };
+        if (enableToolsParam) { extraSettings.enable_tools = enableToolsParam; };
+        const updatedConversation = {
+          ...conversation,
+          settings: {...conversation.settings, ...extraSettings}
+        }
+        setSearchParams();
+        setLocalState( updatedConversation );
+        return;
+      }
+      // Sanity check
+      if (!(conversation?.messages?.length >= 2)) {
+        console.log("Sanitizing conversation...");
+        const updatedConversation = {
+          ...conversation,
+          messages: getDefaultConversation().messages
+        }
+        setLocalState( updatedConversation );
+        return;
+      }
+      setLocalState(conversation);
+    })();
+  }, [conversationId]);
+
+  // Effect 2: Debounced auto-save into IndexedDB
+  useEffect(() => {
+    if (localState?.id) {
+      latestStateRef.current[localState.id] = localState;
+    }
+    if(!initialized) {
+      if (localState?.id === conversationId) {
+        setInitialized(true); // Initialized for next change
+      }
+      return;
+    }
+    const currentConversation = localState?.id;
+    // Check if want to write immediately
+    const flushChanges = localState?.flush || false;
+    if (!isActive) return; // Only auto-save when tab active
+    if (!currentConversation) return;
+    setUnsavedChanges(true);
+    // Clear any scheduled save for this conversation only
+    if (timeoutIds.current[currentConversation]) {
+      clearTimeout(timeoutIds.current[currentConversation]);
+    }
+    const performSave = async () => {
+      if (saveInFlight.current) {
+        needsRetry.current = true;
+        delete timeoutIds.current[currentConversation];
+        return;
+      }
+
+      saveInFlight.current = true;
+      needsRetry.current = false;
+
+      const stateForConversation = latestStateRef.current[currentConversation];
+      if (!stateForConversation) {
+        console.warn("No snapshot found for conversation", currentConversation);
+        saveInFlight.current = false;
+        delete timeoutIds.current[currentConversation];
+        return;
+      }
+      const snapshot = { ...stateForConversation };
+      let ignoreConflict = false;
+      if (snapshot?.ignoreConflict) {
+        ignoreConflict = true;
+        delete snapshot.ignoreConflict;
+      }
+      if (snapshot?.flush) {
+        delete snapshot.flush;
+      }
+
+      let lastModifiedForSave = lastModified.current[currentConversation];
+      if (lastModifiedForSave == null) {
+        const meta = await getConversationMeta(currentConversation);
+        lastModifiedForSave = meta?.lastModified ?? 0;
+        lastModified.current[currentConversation] = lastModifiedForSave;
+      }
+
+      const newLastModified = await updateConversation(
+        currentConversation,
+        { ...snapshot, lastModified: lastModifiedForSave }
+      );
+
+      const pendingSaveRequested = needsRetry.current;
+
+      saveInFlight.current = false;
+      delete timeoutIds.current[currentConversation];
+
+      if (newLastModified === -1) { // Conflict detected
+        needsRetry.current = false;
+        if (!ignoreConflict) {
+          console.log("Conflict for conversation ", currentConversation);
+          openModal("conversationConflict", { localState: snapshot, setLocalState, setUnsavedChanges });
+        }
+        return;
+      }
+
+      // Save successful
+      lastModified.current[currentConversation] = newLastModified;
+
+      if (pendingSaveRequested) {
+        needsRetry.current = false;
+        setTimeout(performSave, 0);
+      } else {
+        console.log("Conversation auto-saved");
+        setUnsavedChanges(false);
+      }
+    };
+
+    // Schedule a save after `delay` ms
+    timeoutIds.current[currentConversation] = setTimeout(
+      performSave,
+      flushChanges ? 0 : delay
+    );
+  }, [localState, delay]);
+
+  // Effect 3: Listen for tab visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsActive(!document.hidden);
+      if (document.hidden) return;
+    };
+    // Initial state
+    setIsActive(!document.hidden);
+    // Listen for visibility changes
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  // Effect 4: Update conversation when tab is activated
+  useEffect(() => {
+    if (!isActive) return;
+    // Tab is now active, check for updates to conversation
+    (async () => {
+      if (!initialized) return;
+      if (unsavedChanges) return; // Wait for user decision
+      // Check if any changes were made while inactive
+      const currentConversation = localState?.id;
+      const lastModifiedDB = (await getConversationMeta(currentConversation)).lastModified;
+      if (lastModified.current[currentConversation] === lastModifiedDB) return; // No changes
+      // Changes detected, load from DB
+      setInitialized(false);
+      const conversation = await loadConversation(navigate, conversationId, lastConversationId, userSettings);
+      if (!conversation) return;
+      lastModified.current[currentConversation] = conversation?.lastModified || 0;
+      setLocalState(conversation);
+      console.log("Loaded updated conversation from browser");
+    })();
+  }, [isActive]);
+}

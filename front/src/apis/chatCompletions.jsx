@@ -1,0 +1,144 @@
+import getModelDefaults from "../config/getModelDefaults";
+import { createBackendClient } from "./openaiClient";
+
+// Controller for handling API request cancellation
+let controller = new AbortController();
+
+async function* chatCompletions (
+  conversation,
+  timeout = 30000,
+  stream = true,
+) {
+  try {
+    const model = typeof conversation.settings.model === 'string'
+      ? conversation.settings.model
+      : conversation.settings.model?.id; // TODO fall back to defaultModel
+
+    const modelDefaults = getModelDefaults(model);
+    // Initialize params
+    const params = {
+      model: model,
+      messages: conversation.messages,
+      temperature: conversation.settings.temperature,
+      top_p: conversation.settings.top_p,
+      stream: stream,
+      stream_options: {include_usage: true },
+    };
+
+    // Handle reasoning settings
+    try {
+      if (modelDefaults?.reasoning_effort !== undefined && modelDefaults?.reasoning_effort !== null) {
+        let reasoning_effort = modelDefaults.reasoning_effort;
+        if (conversation.settings?.reasoning_effort !== undefined && conversation.settings?.reasoning_effort !== null) {
+          reasoning_effort = Math.min(conversation.settings.reasoning_effort, modelDefaults.reasoning_options.length - 1)
+        }
+        if (model?.toLowerCase().startsWith("claude")) {
+          // External Claude models
+          params.reasoning_effort = modelDefaults.reasoning_options[reasoning_effort];
+        }
+        else if (model?.toLowerCase().startsWith("openai") && !(model?.toLowerCase().startsWith("openai-gpt-oss"))) {
+          // External OpenAI models
+          params.reasoning_effort = modelDefaults.reasoning_options[reasoning_effort];
+        }
+        if (model?.toLowerCase().includes("mistral")) {
+          // Internal models that don't use enable_thinking separately
+          params.reasoning_effort = modelDefaults.reasoning_options[reasoning_effort];
+        }
+        else {
+          if (reasoning_effort == 0) {
+            params.chat_template_kwargs = modelDefaults.reasoning_options[0] == "none" ?
+              {enable_thinking: false} : {reasoning_effort: modelDefaults.reasoning_options[0]};
+          } else if (modelDefaults.reasoning_options[reasoning_effort] == "on") {
+            params.chat_template_kwargs = {enable_thinking: true};
+          } else {
+            params.chat_template_kwargs = {enable_thinking: true, reasoning_effort: modelDefaults.reasoning_options[reasoning_effort]};
+          }
+        }
+      }
+    }  catch {
+      console.warn("Could not find reasoning setting")
+    }
+
+    // Handle tools
+    if (conversation.settings?.enable_tools) {
+      params.enable_tools = true;
+      params.tools = conversation?.settings?.tools || [];
+    }
+
+    if (conversation.settings?.arcana && conversation.settings.arcana.id !== "") {
+      params.arcana = conversation.settings.arcana;
+    }
+
+    if (conversation.settings?.feedback) {
+      params.feedback = conversation.settings.feedback;
+    }
+
+    if (conversation.settings?.mcp_servers && conversation.settings.mcp_servers.length > 0) {
+      params["mcp-servers"] = [conversation.settings.mcp_servers];
+    }
+
+    // Define openai object to call backend
+    const openai = createBackendClient(timeout);
+
+    // Get chat completion response
+    const streamResponse = await openai.chat.completions.create(
+      params, { 
+      signal: controller.signal,
+    });
+
+    if (!stream) {
+      const result = streamResponse;
+      console.error("Error:", result);
+      return result;
+    }
+
+    let answer = ""
+    let completed = false
+    for await (const chunk of streamResponse) {
+      if (chunk?.object == "error") {
+        console.error(chunk)
+          const err = new Error(chunk?.message || "Unknown error");
+          err.type = chunk?.type;
+          err.status = chunk?.status || chunk?.code;
+          err.code = chunk?.code || chunk?.status;
+          throw err;
+      }
+      try {
+        if (!completed) {
+          answer += chunk.choices[0].delta?.content || ""
+          // yield (chunk.choices[0].delta)
+          yield chunk
+        } else {
+          yield chunk;
+          return {
+            answer, 
+            usage: chunk?.usage || null
+          };
+        }
+        if (chunk?.choices?.[0]?.finish_reason === 'stop') {
+          completed = true
+        }
+      }
+      catch (err) {
+        console.warn("Warning: ", err)
+        console.log(chunk)
+        // TODO forward exact error
+      }
+    }
+  } catch (error) {
+    // Handle AbortError at the top level
+    if (error?.name === "AbortError") {
+      return null;
+    }
+    throw error; // Propagate other errorsrs
+  }
+}
+
+function abortRequest() {
+  if (controller) {
+    controller.abort(); // stops the stream/fetch
+  }
+  controller = new AbortController();
+}
+
+export { chatCompletions, abortRequest };
