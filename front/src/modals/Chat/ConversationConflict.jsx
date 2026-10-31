@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
@@ -34,7 +35,7 @@ export default function ConversationConflict({ isOpen, onClose, localState, setL
       {/* Message */}
       <div className="pt-0 pb-2">
         <p className="dark:text-white text-black text-justify text-sm">
-          Conversation was changed by another tab or process. Would you like to overwrite, or reload the conversation?
+          {i18n.t("alert.conversation_conflict")}
         </p>
       </div>
 
@@ -45,7 +46,7 @@ export default function ConversationConflict({ isOpen, onClose, localState, setL
           className="text-white p-3 bg-tertiary dark:border-border_dark rounded-2xl justify-center items-center md:w-fit shadow-lg dark:shadow-dark border w-full min-w-[150px] select-none cursor-pointer"
           onClick={handleReload}
         >
-          Reload
+          {i18n.t("alert.reload")}
         </button>
 
         {/* Overwrite button */}
@@ -53,7 +54,7 @@ export default function ConversationConflict({ isOpen, onClose, localState, setL
           className="text-white p-3 bg-red-600 dark:border-border_dark rounded-2xl justify-center items-center md:w-fit shadow-lg dark:shadow-dark border w-full min-w-[150px] select-none cursor-pointer"
           onClick={handleOverwrite}
         >
-          Overwrite
+          {i18n.t("alert.overwrite")}
         </button>
       </div>
     </BaseModal>

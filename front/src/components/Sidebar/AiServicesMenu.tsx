@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import Logo from '../../assets/logos/chat_ai.svg'
@@ -8,7 +9,7 @@ import VoiceAiLogo from '../../assets/logos/voice-ai.svg'
 const items = [
   {
     name: '',
-    description: 'Generate images with AI',
+    get description() { return i18n.t('sidebar.ai_services_image') },
     href: 'https://image-ai.academiccloud.de/',
     icon: (
       <img className="h-10 w-auto object-contain mx-auto" src={ImageAiLogo} alt="Image AI Logo" />
@@ -16,7 +17,7 @@ const items = [
   },
   {
     name: '',
-    description: 'Speech-to-Text conversion',
+    get description() { return i18n.t('sidebar.ai_services_voice') },
     href: 'https://voice-ai.academiccloud.de/',
     icon: (
       <img className="h-8 w-auto object-contain mx-auto" src={VoiceAiLogo} alt="Voice AI Logo" />
@@ -24,7 +25,7 @@ const items = [
   },
   {
     name: 'RAG-Manager',
-    description: 'Vector database management',
+    get description() { return i18n.t('sidebar.ai_services_rag') },
     href: 'https://chat-ai.academiccloud.de/arcanas/',
     icon: (
       <img className="h-9 w-auto object-contain mx-auto" src={LogoSmall} alt="RAG Manager Logo" />
@@ -36,7 +37,7 @@ export default function AiServicesMenu() {
   return (
     <Popover className="relative ">
       <PopoverButton
-        aria-label="Open AI services menu"
+        aria-label={i18n.t("sidebar.ai_services_open")}
         className="focus:outline-none m-1 p-2 inline-flex items-center rounded-xl hover:bg-slate-50 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-150 "
       >
         <img className="h-10 w-auto object-contain" src={Logo} alt="Chat AI Logo" />

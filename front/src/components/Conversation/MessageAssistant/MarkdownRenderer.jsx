@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -431,7 +432,7 @@ export const SafeMarkdown = ({
     console.error("Error rendering markdown:", err);
     return (
       <div className="text-red-500 bg-red-50 dark:bg-red-900/20 p-2 rounded">
-        Error rendering content
+        {i18n.t("conversation.render_error")}
       </div>
     );
   }

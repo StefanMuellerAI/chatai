@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import BaseModal from "../BaseModal";
 
@@ -30,7 +31,7 @@ export default function UnsentFilesModal({ isOpen, onClose, intentionalRefresh }
           className="text-white p-3 bg-tertiary dark:border-border_dark rounded-2xl justify-center items-center md:w-fit shadow-lg dark:shadow-dark border w-full min-w-[150px] select-none cursor-pointer"
           onClick={handleRefresh}
         >
-          Refresh
+          {i18n.t("common.refresh")}
         </button>
       </div>
     </BaseModal>

@@ -103,11 +103,11 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
             <span className="font-medium truncate">{model.name}</span>
           </div>
           <div className="ml-2 flex shrink-0 items-center gap-1 text-tertiary">
-            {model.input?.includes("image") && <Tooltip text={"Image Input"}><FontAwesomeIcon icon={faImage} /></Tooltip>}
-            {model.input?.includes("video") && <Tooltip text={"Video Input"}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
-            {model.input?.includes("audio") && <Tooltip text={"Audio Input"}><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
-            {model.input?.includes("arcana") && <Tooltip text={"Arcana Input"}><FontAwesomeIcon icon={faBookOpen} /></Tooltip>}
-            {model.output?.includes("thought") && <Tooltip text={"Thinking"}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
+            {model.input?.includes("image") && <Tooltip text={t("model_selector.input_image")}><FontAwesomeIcon icon={faImage} /></Tooltip>}
+            {model.input?.includes("video") && <Tooltip text={t("model_selector.input_video")}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
+            {model.input?.includes("audio") && <Tooltip text={t("model_selector.input_audio")}><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
+            {model.input?.includes("arcana") && <Tooltip text={t("model_selector.input_arcana")}><FontAwesomeIcon icon={faBookOpen} /></Tooltip>}
+            {model.output?.includes("thought") && <Tooltip text={t("model_selector.thinking")}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
           </div>
         </div>
       </div>
@@ -137,11 +137,11 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
 
           <div className="flex items-center gap-2">
             <div className="ml-2 flex items-center gap-1 text-tertiary">
-              {selectedModel?.input?.includes("image") && <Tooltip text={"Image Input"} placement="bottom"><FontAwesomeIcon icon={faImage} /></Tooltip>}
-              {selectedModel?.input?.includes("video") && <Tooltip text={"Video Input"} placement="bottom"><FontAwesomeIcon icon={faVideo} /></Tooltip>}
-              {selectedModel?.input?.includes("audio") && <Tooltip text={"Audio Input"} placement="bottom"><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
-              {selectedModel?.input?.includes("arcana") && <Tooltip text={"Arcana Input"} placement="bottom"><FontAwesomeIcon icon={faBookOpen} /></Tooltip>}
-              {selectedModel?.output?.includes("thought") && <Tooltip text={"Thinking"} placement="bottom"><FontAwesomeIcon icon={faBrain} /></Tooltip>}
+              {selectedModel?.input?.includes("image") && <Tooltip text={t("model_selector.input_image")} placement="bottom"><FontAwesomeIcon icon={faImage} /></Tooltip>}
+              {selectedModel?.input?.includes("video") && <Tooltip text={t("model_selector.input_video")} placement="bottom"><FontAwesomeIcon icon={faVideo} /></Tooltip>}
+              {selectedModel?.input?.includes("audio") && <Tooltip text={t("model_selector.input_audio")} placement="bottom"><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
+              {selectedModel?.input?.includes("arcana") && <Tooltip text={t("model_selector.input_arcana")} placement="bottom"><FontAwesomeIcon icon={faBookOpen} /></Tooltip>}
+              {selectedModel?.output?.includes("thought") && <Tooltip text={t("model_selector.thinking")} placement="bottom"><FontAwesomeIcon icon={faBrain} /></Tooltip>}
 
             </div>
             <FontAwesomeIcon icon={faChevronDown} />
@@ -180,7 +180,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              type="text" placeholder="Search models…" autoComplete="off" className="w-full rounded-xl border border-slate-200 dark:border-gray-500 pl-9 pr-3 py-2.5 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+              type="text" placeholder={t("model_selector.search_placeholder")} autoComplete="off" className="w-full rounded-xl border border-slate-200 dark:border-gray-500 pl-9 pr-3 py-2.5 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
           </div>
 
           {/** Internal / external scope filter **/}
@@ -223,7 +223,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
 
         {/** Results List **/}
         <div
-          id="model-listbox" role="listbox" aria-label="Models" tabIndex={-1}
+          id="model-listbox" role="listbox" aria-label={t("model_selector.models")} tabIndex={-1}
           className="px-2 flex-1 min-h-0 max-h-96 overflow-auto"
         >
           <div className="rounded-xl overflow-hidden">

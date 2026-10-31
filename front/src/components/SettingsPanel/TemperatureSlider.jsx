@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { useState, useEffect } from "react";
 import { useModal } from "../../modals/ModalContext";
 import { CircleHelp } from "lucide-react";
@@ -54,7 +55,7 @@ export default function TemperatureSlider({ localState, setLocalState }) {
   return (
     <div className="flex flex-row w-full md:items-center">
       <div className="flex-shrink-0 flex items-center gap-2 min-w-[80px]">
-        <p className="text-sm font-medium">temp</p>
+        <p className="text-sm font-medium">{i18n.t("settings.temperature_label")}</p>
         <CircleHelp
           className="h-[16px] w-[16px] cursor-pointer text-[#009EE0]"
           alt="help"
@@ -64,8 +65,8 @@ export default function TemperatureSlider({ localState, setLocalState }) {
 
       <div className="w-full">
         <div className="select-none flex justify-between text-[10px] text-tertiary">
-          <span>Logical</span>
-          <span>Creative</span>
+          <span>{i18n.t("settings.temperature_low")}</span>
+          <span>{i18n.t("settings.temperature_high")}</span>
         </div>
 
         <div className="relative w-full h-4 flex items-center">

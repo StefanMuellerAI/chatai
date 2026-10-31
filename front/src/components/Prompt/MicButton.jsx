@@ -97,7 +97,7 @@ export default function MicButton({
 
             if (!isSecureContext) {
             notifyError(
-                "Microphone access requires HTTPS or localhost. Please use https:// or access via localhost"
+                t("toast.mic_https")
             );
             return;
             }
@@ -179,19 +179,19 @@ export default function MicButton({
 
             if (error.name === "NotAllowedError") {
             notifyError(
-                "Microphone permission denied. Please allow microphone access and try again."
+                t("toast.mic_denied")
             );
             } else if (error.name === "NotFoundError") {
             notifyError(
-                "No microphone found. Please connect a microphone and try again."
+                t("toast.mic_not_found")
             );
             } else if (error.name === "NotSupportedError") {
             notifyError(
-                "Microphone access not supported. Please use HTTPS or localhost."
+                t("toast.mic_not_supported")
             );
             } else {
             notifyError(
-                "Failed to start recording. Please check your microphone and permissions."
+                t("toast.mic_failed")
             );
             }
 

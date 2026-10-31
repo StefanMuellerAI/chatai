@@ -1,5 +1,6 @@
 import React, { useState, memo, useMemo, useEffect, useCallback } from "react";
 import { Trans } from "react-i18next";
+import i18n from "../../../i18n";
 import {
   ChevronDown,
   ChevronRight,
@@ -105,7 +106,7 @@ const ProgressiveReferenceItem = memo(function ProgressiveReferenceItem({
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 shrink-0"
                 onClick={(e) => e.stopPropagation()}
-                title="Open source"
+                title={i18n.t("conversation.open_source")}
               >
                 <ExternalLink size={16} className="opacity-70" />
               </a>
@@ -115,7 +116,7 @@ const ProgressiveReferenceItem = memo(function ProgressiveReferenceItem({
               <span className="inline-flex items-center ml-1">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <span className="text-xs text-blue-600 dark:text-blue-400 ml-1">
-                  loading...
+                  {i18n.t("conversation.loading_short")}
                 </span>
               </span>
             )}
@@ -127,7 +128,7 @@ const ProgressiveReferenceItem = memo(function ProgressiveReferenceItem({
             <button
               onClick={copyReference}
               className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors cursor-pointer"
-              title="Copy reference"
+              title={i18n.t("conversation.copy_reference")}
             >
               {copied ? (
                 <Check size={14} className="text-green-600" />
@@ -276,12 +277,11 @@ const ReferencesSection = memo(function ReferencesSection({
             <div className="flex items-center gap-3">
               <span className="text-lg font-semibold"><Trans i18nKey="conversation.references" /></span>
               <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full">
-                {visibleCount} of {references.length} source
-                {references.length !== 1 ? "s" : ""}
+                {i18n.t("conversation.sources_count", { count: references.length, visible: visibleCount })}
               </span>
               {isStreaming && (
                 <span className="text-sm text-blue-600/70 dark:text-blue-400/70 animate-pulse">
-                  Streaming...
+                  {i18n.t("conversation.streaming")}
                 </span>
               )}
             </div>
@@ -294,15 +294,15 @@ const ReferencesSection = memo(function ReferencesSection({
                   ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md cursor-pointer"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
               }`}
-              aria-label="Copy all references"
+              aria-label={i18n.t("conversation.copy_all_references")}
               title={
                 isFullyLoaded && references.length > 0
-                  ? "Copy all references to clipboard"
-                  : "Wait for references to load"
+                  ? i18n.t("conversation.copy_all_references_title")
+                  : i18n.t("conversation.wait_for_references")
               }
             >
               {copiedAll ? <Check size={16} /> : <Copy size={16} />}
-              {copiedAll ? "Copied!" : "Copy All"}
+              {copiedAll ? i18n.t("conversation.copied") : i18n.t("conversation.copy_all")}
             </button>
           </div>
         </div>
@@ -327,7 +327,7 @@ const ReferencesSection = memo(function ReferencesSection({
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                   <span className="text-sm">
-                    Loading references... ({visibleCount}/{references.length})
+                    {i18n.t("conversation.loading_references")} ({visibleCount}/{references.length})
                   </span>
                 </div>
               </div>

@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +36,7 @@ export default function ClearCacheModal({ isOpen, onClose }) {
       navigate(`/chat/${newConversationId}`, { replace: true });
       onClose();
     } catch (error) {
-      notifyError("Failed to clear chats: " + error.message);
+      notifyError(i18n.t("toast.clear_chats_error", { message: error.message }));
     }
   }, [dispatch, notifySuccess, notifyError]);
 

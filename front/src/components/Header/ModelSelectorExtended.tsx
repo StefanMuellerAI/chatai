@@ -23,14 +23,14 @@ import {
   faCircleInfo
 } from "@fortawesome/free-solid-svg-icons";
 const sortOptions = [
-  { value: "name-asc", label: "Name (A→Z)" },
-  { value: "name-desc", label: "Name (Z→A)" },
-  { value: "date-desc", label: "Release (new→old)" },
-  { value: "date-asc", label: "Release (old→new)" },
-  { value: "params-desc", label: "Params (high→low)" },
-  { value: "params-asc", label: "Params (low→high)" },
-  { value: "context-desc", label: "Context (high→low)" },
-  { value: "context-asc", label: "Context (low→high)" },
+  { value: "name-asc", label: "model_selector.sort_name_asc" },
+  { value: "name-desc", label: "model_selector.sort_name_desc" },
+  { value: "date-desc", label: "model_selector.sort_date_desc" },
+  { value: "date-asc", label: "model_selector.sort_date_asc" },
+  { value: "params-desc", label: "model_selector.sort_params_desc" },
+  { value: "params-asc", label: "model_selector.sort_params_asc" },
+  { value: "context-desc", label: "model_selector.sort_context_desc" },
+  { value: "context-asc", label: "model_selector.sort_context_asc" },
 ];
 
 export default function ModelSelectorSimple({ selectedModel, modelsData, onChange, listOnly = false, onSelected }: { selectedModel: Object | undefined, modelsData: ExtendedModelInfo[], onChange?: (model: ExtendedModelInfo) => void, listOnly?: boolean, onSelected?: () => void }) {
@@ -105,12 +105,12 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
     return (
       <>
         {external == true ? (
-          <Tooltip text={"External Model"}>
+          <Tooltip text={t("model_selector.external_model")}>
             <FontAwesomeIcon icon={faTriangleExclamation} className="text-amber-600" />
           </Tooltip>
 
         ) : (
-          <Tooltip text={"Internal Model"}>
+          <Tooltip text={t("model_selector.internal_model")}>
             <FontAwesomeIcon icon={faShieldHalved} className="text-green-700" />
           </Tooltip>
         )}
@@ -161,7 +161,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
             </span>
             <span className="text-xs text-slate-500 dark:text-slate-300">
               <FontAwesomeIcon icon={faCircleDot} className="mr-1" />
-              Context {model.contextLength && model.contextLength !== "" ? model.contextLength : "-"}
+              {t("model_selector.context")} {model.contextLength && model.contextLength !== "" ? model.contextLength : "-"}
             </span>
             {/*
             <span className="text-xs text-slate-500">
@@ -169,10 +169,10 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
               Param {model.numParameters && model.numParameters !== "" ? model.numParameters : "-"}
             </span>*/}
             <div className="flex items-center gap-1 text-tertiary">
-              {model.input.includes("image") && <Tooltip text={"Image Input"}><FontAwesomeIcon icon={faImage} /></Tooltip>}
-              {model.input.includes("video") && <Tooltip text={"Video Input"}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
-              {model.input.includes("audio") && <Tooltip text={"Audio Input"}><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
-              {model.output.includes("thought") && <Tooltip text={"Thinking"}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
+              {model.input.includes("image") && <Tooltip text={t("model_selector.input_image")}><FontAwesomeIcon icon={faImage} /></Tooltip>}
+              {model.input.includes("video") && <Tooltip text={t("model_selector.input_video")}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
+              {model.input.includes("audio") && <Tooltip text={t("model_selector.input_audio")}><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
+              {model.output.includes("thought") && <Tooltip text={t("model_selector.thinking")}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
               
             </div>
           </div>
@@ -205,13 +205,13 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
 
           <span className="text-xs text-slate-500 dark:text-slate-300">
             <FontAwesomeIcon icon={faCircleDot} className="mr-1" />
-            Context {model.contextLength && model.contextLength !== "" ? model.contextLength : "-"}
+            {t("model_selector.context")} {model.contextLength && model.contextLength !== "" ? model.contextLength : "-"}
           </span>
           <div className="flex items-center gap-1 text-tertiary">
-            {model.input.includes("image") && <Tooltip text={"Image Input"}><FontAwesomeIcon icon={faImage} /></Tooltip>}
-            {model.input.includes("video") && <Tooltip text={"Video Input"}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
-            {model.input.includes("audio") && <Tooltip text={"Audio Input"}><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
-            {model.output.includes("thought") && <Tooltip text={"Thinking"}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
+            {model.input.includes("image") && <Tooltip text={t("model_selector.input_image")}><FontAwesomeIcon icon={faImage} /></Tooltip>}
+            {model.input.includes("video") && <Tooltip text={t("model_selector.input_video")}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
+            {model.input.includes("audio") && <Tooltip text={t("model_selector.input_audio")}><FontAwesomeIcon icon={faMicrophone} /></Tooltip>}
+            {model.output.includes("thought") && <Tooltip text={t("model_selector.thinking")}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
           </div>
           {/*
             <span className="text-xs text-slate-500">
@@ -251,7 +251,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
           <div className="flex items-center gap-x-3">
             <span className="flex items-center">
               <FontAwesomeIcon icon={faCircleDot} className="mr-1" />
-              Context {model.contextLength && model.contextLength !== "" ? model.contextLength : "-"}
+              {t("model_selector.context")} {model.contextLength && model.contextLength !== "" ? model.contextLength : "-"}
             </span>
             {/*
             <span className="flex items-center">
@@ -261,29 +261,29 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
           </div>
           <div className="flex items-center gap-1">
             {model.output.includes("thought") && (
-              <Tooltip text={"Thinking"}>
-                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label="Text input">
+              <Tooltip text={t("model_selector.thinking")}>
+                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label={t("model_selector.capability")}>
                   <FontAwesomeIcon icon={faBrain} />
                 </div>
               </Tooltip>
             )}
             {model.input.includes("image") && (
-              <Tooltip text={"Image Input"}>
-                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label="Text input">
+              <Tooltip text={t("model_selector.input_image")}>
+                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label={t("model_selector.capability")}>
                   <FontAwesomeIcon icon={faImage} />
                 </div>
               </Tooltip>
             )}
             {model.input.includes("video") && (
-              <Tooltip text={"Video Input"}>
-                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label="Text input">
+              <Tooltip text={t("model_selector.input_video")}>
+                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label={t("model_selector.capability")}>
                   <FontAwesomeIcon icon={faVideo} />
                 </div>
               </Tooltip>
             )}
             {model.input.includes("audio") && (
-              <Tooltip text={"Audio Input"}>
-                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label="Text input">
+              <Tooltip text={t("model_selector.input_audio")}>
+                <div className="text-tertiary size-9 inline-grid place-items-center rounded-xl border border-slate-200 dark:border-slate-500" aria-label={t("model_selector.capability")}>
                   <FontAwesomeIcon icon={faMicrophone} />
                 </div>
               </Tooltip>
@@ -314,7 +314,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
               <DemandIndicator demand={selectedModel?.demand} status={selectedModel?.status} />
             </div>
             <span className="font-medium">{selectedModel?.name}</span>
-            {selectedModel?.external == true && (<Chip text={"External"} colorPreset={"orange"} />)}
+            {selectedModel?.external == true && (<Chip text={t("model_selector.external")} colorPreset={"orange"} />)}
             <Chip text={selectedModel?.company} />
             <span className="text-xs text-slate-500 dark:text-slate-300 hidden sm:inline-block">
               <FontAwesomeIcon icon={faCalendar} />
@@ -322,7 +322,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
             </span>
             <span className="text-xs text-slate-500 dark:text-slate-300 hidden sm:inline-block">
               <FontAwesomeIcon icon={faCircleDot} className="mr-1" />
-              Context {selectedModel?.contextLength !== "" ? selectedModel?.contextLength : "-"}
+              {t("model_selector.context")} {selectedModel?.contextLength !== "" ? selectedModel?.contextLength : "-"}
             </span>
             {/*
             <span className="text-xs text-slate-500 hidden sm:inline-block">
@@ -333,9 +333,9 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
 
           <div className="flex items-center gap-2">
             <div className="ml-2 flex items-center gap-1 text-tertiary">
-              {selectedModel?.input.includes("image") && <Tooltip text={"Image Input"}><FontAwesomeIcon icon={faImage} /></Tooltip>}
-              {selectedModel?.input.includes("video") && <Tooltip text={"Video Input"}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
-              {selectedModel?.output.includes("thought") && <Tooltip text={"Thinking"}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
+              {selectedModel?.input.includes("image") && <Tooltip text={t("model_selector.input_image")}><FontAwesomeIcon icon={faImage} /></Tooltip>}
+              {selectedModel?.input.includes("video") && <Tooltip text={t("model_selector.input_video")}><FontAwesomeIcon icon={faVideo} /></Tooltip>}
+              {selectedModel?.output.includes("thought") && <Tooltip text={t("model_selector.thinking")}><FontAwesomeIcon icon={faBrain} /></Tooltip>}
 
             </div>
             <FontAwesomeIcon icon={faChevronDown} />
@@ -373,24 +373,24 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              type="text" placeholder="Search models…" autoComplete="off" className="w-full rounded-xl border border-slate-200 dark:border-gray-500 pl-9 pr-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+              type="text" placeholder={t("model_selector.search_placeholder")} autoComplete="off" className="w-full rounded-xl border border-slate-200 dark:border-gray-500 pl-9 pr-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
           </div>
 
           {/** View tabs (kept; default is List) **/}
-          <div className=" rounded-xl border border-slate-200 overflow-hidden" role="tablist" aria-label="View mode">
+          <div className=" rounded-xl border border-slate-200 overflow-hidden" role="tablist" aria-label={t("model_selector.view_mode")}>
             <button
               onClick={() => setResultViewMode("list")}
-              data-view="simple" className="view-btn px-3 py-2 text-sm hover:bg-tertiary/30 aria-selected:bg-tertiary aria-selected:text-white" role="tab" aria-selected={resultViewMode === "list"} title="List">
+              data-view="simple" className="view-btn px-3 py-2 text-sm hover:bg-tertiary/30 aria-selected:bg-tertiary aria-selected:text-white" role="tab" aria-selected={resultViewMode === "list"} title={t("model_selector.view_list")}>
               <FontAwesomeIcon icon={faList} />
             </button>
             <button
               onClick={() => setResultViewMode("extended")}
-              data-view="extended" className="view-btn px-3 py-2 text-sm hover:bg-tertiary/30 aria-selected:bg-tertiary aria-selected:text-white" role="tab" aria-selected={resultViewMode === "extended"} title="Extended">
+              data-view="extended" className="view-btn px-3 py-2 text-sm hover:bg-tertiary/30 aria-selected:bg-tertiary aria-selected:text-white" role="tab" aria-selected={resultViewMode === "extended"} title={t("model_selector.view_extended")}>
               <FontAwesomeIcon icon={faRectangleList} />
             </button>
             <button
               onClick={() => setResultViewMode("grid")}
-              data-view="grid" className="view-btn px-3 py-2 text-sm hover:bg-tertiary/30 aria-selected:bg-tertiary aria-selected:text-white" role="tab" aria-selected={resultViewMode === "grid"} title="Grid">
+              data-view="grid" className="view-btn px-3 py-2 text-sm hover:bg-tertiary/30 aria-selected:bg-tertiary aria-selected:text-white" role="tab" aria-selected={resultViewMode === "grid"} title={t("model_selector.view_grid")}>
               <FontAwesomeIcon icon={faTableCells} />
             </button>
           </div>
@@ -432,7 +432,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
             
             <MenuButton className="inline-flex w-full justify-between items-center rounded-xl border border-slate-200 bg-white dark:bg-bg_secondary_dark px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-200 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
               <span className="hidden sm:block">
-                {sortOptions.find((opt) => opt.value === sortBy)?.label || "Sort by"}
+                {t(sortOptions.find((opt) => opt.value === sortBy)?.label || "model_selector.sort_by")}
                 <FontAwesomeIcon size="sm" icon={faChevronDown} />
               </span>
               <span className="sm:hidden">
@@ -449,7 +449,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
                         onClick={() => {setSortBy(option.value); close()}}
                         className="data-focus:bg-tertiary/10 dark:data-focus:bg-secondary rounded-xl text-slate-700 dark:text-slate-200 block w-full px-4 py-2 text-left text-sm"
                       >
-                        {option.label}
+                        {t(option.label)}
 
                       </button>
                     )}
@@ -461,7 +461,7 @@ export default function ModelSelectorSimple({ selectedModel, modelsData, onChang
         </div>
 
         {/** Results List **/}
-        <div id="model-listbox" role="listbox" aria-label="Models" tabIndex={-1} className="max-h-110 overflow-auto px-2">
+        <div id="model-listbox" role="listbox" aria-label={t("model_selector.models")} tabIndex={-1} className="max-h-110 overflow-auto px-2">
           {resultViewMode === 'list' && (
             <div className="rounded-xl overflow-hidden grid gap-1 py-2">
               {filteredModelsList.map((m, idx) => (

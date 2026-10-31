@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { useMemo, useState } from "react";
 import Papa from "papaparse";
 import BaseModal from "../BaseModal"; // Using our new BaseModal (Headless UI)
@@ -22,7 +23,7 @@ const CSVTable = ({ content }) => {
       });
       return result.data;
     } catch (error) {
-      setError("Failed to parse CSV content");
+      setError(i18n.t("preview.csv_error"));
       return [];
     }
   }, [content]);
@@ -34,7 +35,7 @@ const CSVTable = ({ content }) => {
   if (!parsedData?.length)
     return (
       <div className="p-4 text-gray-600 dark:text-gray-400">
-        No data available
+        {i18n.t("preview.no_data")}
       </div>
     );
 
@@ -100,7 +101,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
       setTimeout(() => URL.revokeObjectURL(downloadUrl), 300);
     } catch (err) {
       console.error("Download failed:", err);
-      alert("Failed to download file");
+      alert(i18n.t("preview.download_error"));
     }
   };
 
@@ -115,7 +116,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
       if (!file)
         return (
           <div className="p-4 text-gray-600 dark:text-gray-400">
-            No file to preview
+            {i18n.t("preview.no_file")}
           </div>
         );
 
@@ -136,7 +137,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
               src={base64}
               alt={file.name}
               className="max-h-[85vh] max-w-full object-contain"
-              onError={() => setLoadError("Failed to load image")}
+              onError={() => setLoadError(i18n.t("preview.image_error"))}
             />
           </div>
         );
@@ -149,9 +150,9 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
               src={base64}
               controls
               className="max-h-[85vh] max-w-full"
-              onError={() => setLoadError("Failed to load video")}
+              onError={() => setLoadError(i18n.t("preview.video_error"))}
             >
-              Your browser does not support the video tag.
+              {i18n.t("preview.video_unsupported")}
             </video>
           </div>
         );
@@ -179,10 +180,10 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
                 />
               </svg>
               <p className="text-gray-600 dark:text-gray-400 mb-2">
-                PDF preview is not available on mobile devices
+                {i18n.t("preview.pdf_mobile")}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500">
-                Please use a desktop browser to preview PDF files
+                {i18n.t("preview.pdf_mobile_hint")}
               </p>
             </div>
           );
@@ -210,7 +211,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
                   </svg>
                   <div>
                     <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                      Original PDF Preview
+                      {i18n.t("preview.pdf_original")}
                     </p>
                     <p className="text-xs text-blue-600 dark:text-blue-300">
                       This PDF hasn&quot;t been processed yet. Click
@@ -225,7 +226,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
                 className="w-full flex-1"
                 style={{ minWidth: "800px" }}
                 title={file.name}
-                onError={() => setLoadError("Failed to display PDF")}
+                onError={() => setLoadError(i18n.t("preview.pdf_error"))}
               />
             </div>
           );
@@ -248,10 +249,10 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
               />
             </svg>
             <p className="text-gray-600 dark:text-gray-400 mb-2">
-              PDF content not available
+              {i18n.t("preview.pdf_unavailable")}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-500">
-              The original PDF file data is not available for preview
+              {i18n.t("preview.pdf_unavailable_hint")}
             </p>
           </div>
         );
@@ -269,7 +270,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
       ) {
         return (
           <pre className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg overflow-auto max-h-[85vh] w-full font-mono text-sm text-gray-800 dark:text-gray-200">
-            {textContent || "No content available"}
+            {textContent || i18n.t("preview.no_content")}
           </pre>
         );
       }
@@ -279,7 +280,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
         return (
           <pre className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg overflow-auto max-h-[85vh] w-full">
             <code className="font-mono text-sm whitespace-pre-wrap text-gray-800 dark:text-gray-200">
-              {textContent || "No content available"}
+              {textContent || i18n.t("preview.no_content")}
             </code>
           </pre>
         );
@@ -297,7 +298,7 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
       // Unsupported File Type
       return (
         <div className="p-4 text-gray-600 dark:text-gray-400">
-          Unsupported file type
+          {i18n.t("preview.unsupported")}
         </div>
       );
     } catch (error) {
@@ -328,12 +329,12 @@ export default function PreviewModal({ isOpen, onClose, fileId }) {
           <button
             onClick={handleSave}
             className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-2xl text-white font-medium text-sm transition-colors cursor-pointer"
-            aria-label="Download file"
+            aria-label={i18n.t("preview.download")}
           >
-            Save to device
+            {i18n.t("preview.save_to_device")}
           </button>
           {/* Close Button */}
-          <button onClick={onClose} aria-label="Close">
+          <button onClick={onClose} aria-label={i18n.t("common.close")}>
             <X
               className="h-[20px] w-[20px] cursor-pointer text-[#009EE0]"
               alt="cross"

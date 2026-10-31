@@ -40,6 +40,7 @@ import SummarizeChatButton from "./Buttons/SummarizeChatButton";
 import ExportChatButton from "./Buttons/ExportChatButton";
 import DeleteChatButton from "./Buttons/DeleteChatButton";
 import RenameChatButton from "./Buttons/RenameChatButton";
+import { displayTitle } from "../../utils/chatTitle";
 
 export default function SidebarContent({
   localState,
@@ -111,9 +112,7 @@ export default function SidebarContent({
   const visibleConversations = useMemo(() => {
     if (!hasSearch) return conversations;
     return conversations.filter((conv) => {
-      const title =
-        conv.title ||
-        t("conversation.untitled", { defaultValue: "Untitled Chat" });
+      const title = displayTitle(conv.title);
       return title.toLowerCase().includes(normalizedSearch);
     });
   }, [conversations, hasSearch, normalizedSearch, t]);
@@ -230,7 +229,7 @@ export default function SidebarContent({
     if (!conv) return;
     openModal("moveChat", {
       conversationId: conv.id,
-      conversationTitle: conv.title || "Untitled Chat",
+      conversationTitle: displayTitle(conv.title),
       currentFolderId: conv.folderId ?? null,
       folders,
       localState,
@@ -239,9 +238,7 @@ export default function SidebarContent({
   };
 
   const highlightText = (text?: string | null) => {
-    const value =
-      text ||
-      t("conversation.untitled", { defaultValue: "Untitled Chat" });
+    const value = displayTitle(text);
     if (!hasSearch) return value;
     const escapeRegExp = (str: string) =>
       str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -293,7 +290,7 @@ export default function SidebarContent({
 
     openModal("renameChat", {
       id: conv.id,
-      currentTitle: conv.title || "Untitled Chat",
+      currentTitle: displayTitle(conv.title),
       localState: localState,
       setLocalState: setLocalState,
     });
@@ -403,7 +400,7 @@ export default function SidebarContent({
         <div className="flex items-center h-full w-full group">
           <div
             className="flex-1 overflow-hidden min-w-0"
-            title={conv.title || "Untitled Chat"}
+            title={displayTitle(conv.title)}
             onDoubleClick={(e) => handleTitleDoubleClick(e, conv)}
             style={{ cursor: isDesktop ? "text" : "pointer" }}
           >

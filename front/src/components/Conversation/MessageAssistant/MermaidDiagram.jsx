@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import { useState, useEffect, memo } from "react";
 import mermaid from "mermaid";
 import DOMPurify from "dompurify";
@@ -51,7 +52,7 @@ const MermaidDiagram = memo(({ content }) => {
   if (error) {
     return (
       <div className="p-2 text-red-500">
-        Failed to render diagram. Showing raw code instead:
+        {i18n.t("conversation.diagram_error")}
         <pre className="mt-2 text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded">
           {content}
         </pre>
@@ -60,7 +61,7 @@ const MermaidDiagram = memo(({ content }) => {
   }
 
   if (!svg) {
-    return <div className="p-2">Loading diagram...</div>;
+    return <div className="p-2">{i18n.t("conversation.diagram_loading")}</div>;
   }
 
   return <div dangerouslySetInnerHTML={{ __html: svg }} />;

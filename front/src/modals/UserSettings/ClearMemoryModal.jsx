@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import BaseModal from "../BaseModal";
@@ -19,7 +20,7 @@ export default function ClearMemoryModal({
   // Clear all memories
   const handleDeleteAllMemories = () => {
     dispatch(deleteAllMemories());
-    if (notifySuccess) notifySuccess("Memories Deleted Successfully");
+    if (notifySuccess) notifySuccess(i18n.t("toast.memories_deleted"));
     onClose();
   };
 

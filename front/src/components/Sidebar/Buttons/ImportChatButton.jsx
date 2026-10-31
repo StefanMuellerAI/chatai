@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 import { useImportConversation } from "../../../hooks/useImportConversation";
@@ -23,19 +24,19 @@ export default function ImportChatButton({
 
       // Validate file selection and type
       if (!selectedFile) {
-        notifyError("No file selected.");
+        notifyError(i18n.t("toast.no_file_selected"));
         return;
       }
 
       if (selectedFile.type !== "application/json") {
-        notifyError("Please select a valid JSON file.");
+        notifyError(i18n.t("toast.invalid_json_file"));
         return;
       }
 
       const reader = new FileReader();
 
       reader.onerror = () => {
-        notifyError("Error reading file.");
+        notifyError(i18n.t("toast.file_read_error"));
       };
 
       // Handle file content after loading
@@ -50,13 +51,13 @@ export default function ImportChatButton({
           await importConversation(parsedData, false, topicId);
         } catch (jsonError) {
           console.error("JSON Parse Error:", jsonError);
-          notifyError("Invalid JSON file format: " + jsonError.message);
+          notifyError(i18n.t("toast.invalid_json_format", { message: jsonError.message }));
         }
       };
 
       reader.readAsText(selectedFile);
     } catch (error) {
-      notifyError("An error occurred: " + error.toString());
+      notifyError(i18n.t("toast.error_with_message", { message: error.toString() }));
     }
   };
 

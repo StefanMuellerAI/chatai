@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -101,7 +102,7 @@ export default function SummarizeChatModal({
         ...prev,
         messages: [
           { role: "system", content: [{ type: "text", text: originalSystemPrompt }] },
-          { role: "user", content: [{ type: "text", text: "Please summarize our conversation so far" }] },
+          { role: "user", content: [{ type: "text", text: i18n.t("conversation.summarize_request") }] },
           { role: "assistant", content: [{ type: "text", text: summaryText }], loading: false },
           { role: "user", content: [{ type: "text", text: "" }] },
         ],
@@ -116,7 +117,7 @@ export default function SummarizeChatModal({
     } catch (error) {
       // FAILURE: don't touch localState — original conversation preserved
       console.error("Summarization failed:", error);
-      setErrorMessage(error?.message || "An unknown error occurred");
+      setErrorMessage(error?.message || i18n.t("toast.unknown_error"));
       setStatus("error");
       onClose();
     }

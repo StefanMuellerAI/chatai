@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import MarkdownRenderer from "./MarkdownRenderer";
+import { useTranslation } from "react-i18next";
 import Typing from "./Typing";
 import CopyButton from "./CopyButton";
 import Attachment from "../../Prompt/Attachment";
@@ -18,6 +19,7 @@ const MAX_HEIGHT = 200;
 const MIN_HEIGHT = 56;
 
 export default React.memo(({ localState, setLocalState, message_index }) => {
+  const { t } = useTranslation();
   //Refs
   const assistantMessage = useRef(null);
   const editBox = useRef(null);
@@ -160,7 +162,7 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
 
   const content = message?.content?.[0]?.text ?? "";
   const isContentEmpty = !content.trim();
-  const errorMessage = message?.meta?.error || "Unknown Error";
+  const errorMessage = message?.meta?.error || t("conversation.unknown_error");
   return (
     <div
       key={message_index}
@@ -185,7 +187,7 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
                 disabled={loading}
               >
                 <RotateCw className="w-4 h-4" />
-                Try Again
+                {t("conversation.try_again")}
               </button>
             </div>
           )}
@@ -213,7 +215,7 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
                   }
                 }}
                 className="p-2 outline-none rounded-sm w-full text-sm dark:text-white text-black bg-white dark:bg-bg_secondary_dark resize-y overflow-y-auto"
-                placeholder="Edit response..."
+                placeholder={t("conversation.edit_response_placeholder")}
                 style={{
                   minHeight: `${MIN_HEIGHT}px`,
                   maxHeight: `${MAX_HEIGHT}px`,
@@ -224,13 +226,13 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
                   onClick={() => setEditMode(false)}
                   className="text-sm text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full cursor-pointer"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   onClick={() => handleSave()}
                   className="text-md text-primary border dark:text-tertiary rounded-full px-3 py-1 cursor-pointer"
                 >
-                  Save
+                  {t("common.save")}
                 </button>
               </div>
             </div>
@@ -239,7 +241,7 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
           {feedbackMode && (
             <div className="flex flex-col justify-between gap-1">
 
-              <div>WARNING: Your feedback will be sent to the server.</div>
+              <div>{t("conversation.feedback_warning")}</div>
               
               <textarea
                 ref={feedbackBox}
@@ -259,7 +261,7 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
                   }
                 }}
                 className="p-2 outline-none rounded-sm w-full text-sm dark:text-white text-black bg-white dark:bg-bg_secondary_dark resize-y overflow-y-auto"
-                placeholder="Provide feedback..."
+                placeholder={t("conversation.feedback_placeholder")}
                 style={{
                   minHeight: `${MIN_HEIGHT}px`,
                   maxHeight: `${MAX_HEIGHT}px`,
@@ -270,13 +272,13 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
                   onClick={() => setFeedbackMode(false)}
                   className="text-sm text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full cursor-pointer"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   onClick={() => handleSaveFB()}
                   className="text-md text-primary border dark:text-tertiary rounded-full px-3 py-1 cursor-pointer"
                 >
-                  Save & Send FB
+                  {t("conversation.feedback_send")}
                 </button>
               </div>
             </div>
@@ -329,7 +331,7 @@ export default React.memo(({ localState, setLocalState, message_index }) => {
                     `}
                         disabled={loading}
                       >
-                        {mode}
+                        {t(`conversation.render_${mode.toLowerCase()}`)}
                       </button>
                     ))}
                   </div>

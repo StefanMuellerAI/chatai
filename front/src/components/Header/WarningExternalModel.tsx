@@ -1,4 +1,5 @@
 import { Trans } from "react-i18next";
+import i18n from "../../i18n";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Locked, WarningAltFilled, Close } from "@carbon/icons-react";
@@ -165,7 +166,7 @@ export default function WarningExternalModel({
                    text-gray-500 hover:text-gray-700
                    dark:text-gray-400 dark:hover:text-white
                    transition-colors cursor-pointer"
-        title="Close"
+        title={i18n.t("common.close")}
       >
         <Close size={16} />
       </button>

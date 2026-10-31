@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { useState } from "react";
 import { Trans } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
@@ -93,7 +94,7 @@ export default function UserMemoryModal({
             <textarea
               value={newMemoryText}
               onChange={(e) => setNewMemoryText(e.target.value)}
-              placeholder="Enter new memory..."
+              placeholder={i18n.t("memory.new_placeholder")}
               className="flex-1 px-3 py-2 h-full border dark:border-border_dark rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               onKeyDown={(e) => e.key === "Enter" && handleAddMemory()}
             />

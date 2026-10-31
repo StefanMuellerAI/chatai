@@ -1,6 +1,7 @@
 {
     "mode": "dev",
     "port": 8080,
+    "defaultLanguage": "de",
     "backendPath": "http://localhost:8081",
     "modelsPath": "http://localhost:8081/models",
     "userDataPath": "http://localhost:8081/user",

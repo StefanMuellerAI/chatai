@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import type { FolderRow } from "../../db/dbTypes";
 
 /**
@@ -23,14 +24,14 @@ export type TopicColorId =
   | "fuchsia";
 
 export const TOPIC_COLORS: { id: TopicColorId; label: string; hex: string }[] = [
-  { id: "rose", label: "Rose", hex: "#E11D48" },
-  { id: "orange", label: "Orange", hex: "#EA580C" },
-  { id: "amber", label: "Amber", hex: "#D97706" },
-  { id: "emerald", label: "Emerald", hex: "#059669" },
-  { id: "teal", label: "Teal", hex: "#0D9488" },
-  { id: "cyan", label: "Cyan", hex: "#0891B2" },
-  { id: "violet", label: "Violet", hex: "#7C3AED" },
-  { id: "fuchsia", label: "Fuchsia", hex: "#C026D3" },
+  { id: "rose", get label() { return i18n.t("folders.colors.rose", { defaultValue: "Rose" }); }, hex: "#E11D48" },
+  { id: "orange", get label() { return i18n.t("folders.colors.orange", { defaultValue: "Orange" }); }, hex: "#EA580C" },
+  { id: "amber", get label() { return i18n.t("folders.colors.amber", { defaultValue: "Amber" }); }, hex: "#D97706" },
+  { id: "emerald", get label() { return i18n.t("folders.colors.emerald", { defaultValue: "Emerald" }); }, hex: "#059669" },
+  { id: "teal", get label() { return i18n.t("folders.colors.teal", { defaultValue: "Teal" }); }, hex: "#0D9488" },
+  { id: "cyan", get label() { return i18n.t("folders.colors.cyan", { defaultValue: "Cyan" }); }, hex: "#0891B2" },
+  { id: "violet", get label() { return i18n.t("folders.colors.violet", { defaultValue: "Violet" }); }, hex: "#7C3AED" },
+  { id: "fuchsia", get label() { return i18n.t("folders.colors.fuchsia", { defaultValue: "Fuchsia" }); }, hex: "#C026D3" },
 ];
 
 const BY_ID = new Map(TOPIC_COLORS.map((c) => [c.id, c]));

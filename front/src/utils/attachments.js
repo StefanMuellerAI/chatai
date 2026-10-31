@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 // Converts a file to base64 string format using FileReader
 export const readFileAsBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -174,7 +175,7 @@ const addAttachments = async ({
     // Notify if unsupported files were removed
     if (files.length !== selectedFiles.length) {
         console.error("❌ Some files are not supported");
-        notifyError("Unsupported File Type(s)");
+        notifyError(i18n.t("toast.unsupported_files"));
         return;
     }
 
@@ -210,7 +211,7 @@ const addAttachments = async ({
             // All checks successful - keep file
             validFiles.push(file);
         } catch (err) {
-            notifyError(`Error while attaching ${file.name}.`);
+            notifyError(i18n.t("toast.attach_error", { name: file.name }));
         }
     }
 
@@ -235,11 +236,11 @@ const addAttachments = async ({
     });
 
     // Notify success
-    notifySuccess(`File${newAttachments.length > 1 ? "s" : ""} attached`);
+    notifySuccess(i18n.t("toast.files_attached", { count: newAttachments.length }));
 
     } catch (error) {
         console.log(error)
-    notifyError(`An error occurred: ${error.message}`);
+    notifyError(i18n.t("toast.error_with_message", { message: error.message }));
     }
 };
 
@@ -398,9 +399,9 @@ const addAudioAttachment = async ({
         newAttachments: [{"type": "file", "fileId": fileId}]
     });
 
-    notifySuccess("Audio recorded and converted to WAV successfully");
+    notifySuccess(i18n.t("toast.audio_recorded"));
     } catch (error) {
-    notifyError(`Error processing recorded audio: ${error.message}`);
+    notifyError(i18n.t("toast.audio_record_error", { message: error.message }));
     }
 };
 
@@ -445,11 +446,11 @@ const pasteAttachments = async ({
                 setLocalState,
                 newAttachments
             });
-            notifySuccess("Image pasted from clipboard");
+            notifySuccess(i18n.t("toast.image_pasted"));
         }
     } catch (error) {
         console.log(error)
-        notifyError("An error occurred while pasting: ", error);
+        notifyError(i18n.t("toast.paste_error"), error);
     }
 };
 

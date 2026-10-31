@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import OpenAI from "openai";
+import i18n from "../i18n";
 import { useSelector } from "react-redux";
 import { editMemory, addMemory, selectAllMemories } from "../Redux/reducers/userSettingsReducer";
 import { chatCompletions } from "../apis/chatCompletions";
@@ -326,31 +327,26 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "error") {
-                process_block += "Could not use tools: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.tools_error", { msg: String(arg?.msg) }) + "\n\n";
               } 
             }
             if (delta.tool_calls[0]?.function?.name === "mcp.event") {
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "call") {
-                process_block += "Calling MCP server: " + String(arg?.server) 
-                + "\n\nfunction: `" 
-                + String(arg?.function) 
-                + "` with args: `"
-                + String(arg?.arguments)
-                + "`\n\n";
+                process_block += i18n.t("tools_progress.mcp_call", { server: String(arg?.server), fn: String(arg?.function), args: String(arg?.arguments) }) + "\n\n";
               } else if (arg.event === "result") {
-                process_block += "MCP response received of type `" + String(arg?.type) + "`\n\n";
+                process_block += i18n.t("tools_progress.mcp_result", { type: String(arg?.type) }) + "\n\n";
               }
             }
             if (delta.tool_calls[0]?.function?.name === "rscript.event") {
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "preparing_script") {
-                process_block += "Running R Script:\n```r\n" + String(arg?.script) + "\n```\n\n";
+                process_block += i18n.t("tools_progress.rscript_run") + "\n```r\n" + String(arg?.script) + "\n```\n\n";
               } 
               if (arg.event === "error") {
-                process_block += "Cannot use Rscript: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.rscript_error", { msg: String(arg?.msg) }) + "\n\n";
               } 
             }
             // Handle web search events
@@ -358,15 +354,15 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "begin") {
-                process_block += "Searching for \"" + arg.query + "\" on ";
+                process_block += i18n.t("tools_progress.search_begin", { query: arg.query }) + " ";
               } else if (arg.event === "config") {
                 process_block += String(arg?.["search-engine"]) + "\n\n";
               } else if (arg.event === "websearch_done") {
-                process_block += "Web search completed. Used " + String(arg.selected) + " relevant sources.\n\n";
+                process_block += i18n.t("tools_progress.search_done", { count: Number(arg.selected) || 0 }) + "\n\n";
               } else if (arg.event === "websearch_page_cache" || arg.event === "fetch") {
-                process_block += "Reading source: " + String(arg?.url) + "\n\n";
+                process_block += i18n.t("tools_progress.read_source", { url: String(arg?.url) }) + "\n\n";
               } else if (arg.event === "error") {
-                process_block += "Websearch Error: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.search_error", { msg: String(arg?.msg) }) + "\n\n";
               } else {
                 process_block += "";
               }
@@ -375,7 +371,7 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "accessing") {
-                process_block += `Reading arcana "${arg.arcana}" \n\n`;
+                process_block += i18n.t("tools_progress.arcana_read", { arcana: arg.arcana }) + "\n\n";
               } else if (arg.event === "done") {
                 process_block += "";// "Arcana retrieval completed.";
               } else {
@@ -386,13 +382,13 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "image_creation_begin") {
-                process_block += `Generating image: "${arg.query}" \n\n`;
+                process_block += i18n.t("tools_progress.image_begin", { query: arg.query }) + "\n\n";
               } else if (arg.event === "image_modify_begin") {
-                process_block += "Modifying image: " + String(arg?.query) + "\n\n";
+                process_block += i18n.t("tools_progress.image_modify", { query: String(arg?.query) }) + "\n\n";
               } else if (arg.event === "done") {
                 process_block += "";// "Image generation completed.";
               } if (arg.event === "error") {
-                process_block += "Image generation failed: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.image_error", { msg: String(arg?.msg) }) + "\n\n";
               } else {
                 process_block += "";
               }
@@ -401,9 +397,9 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "begin") {
-                process_block += `Generating video: "${arg.query}" \n\n`;
+                process_block += i18n.t("tools_progress.video_begin", { query: arg.query }) + "\n\n";
               } if (arg.event === "error") {
-                process_block += "Video generation failed: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.video_error", { msg: String(arg?.msg) }) + "\n\n";
               } else {
                 process_block += "";
               }
@@ -412,11 +408,11 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "audio_creation_begin") {
-                process_block += `Generating audio: "${arg.query}" \n\n`;
+                process_block += i18n.t("tools_progress.audio_begin", { query: arg.query }) + "\n\n";
               } else if (arg.event === "done") {
                 process_block += "";// "Audio generation completed.";
               } if (arg.event === "error") {
-                process_block += "Audio generation failed: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.audio_error", { msg: String(arg?.msg) }) + "\n\n";
               } else {
                 process_block += "";
               }
@@ -425,11 +421,11 @@ const sendMessage = async ({
               let arg = delta.tool_calls[0].function.arguments;
               if (typeof arg === "string") arg = JSON.parse(arg);
               if (arg.event === "begin") {
-                process_block += `Transcribing audio: `;
+                process_block += i18n.t("tools_progress.transcribe_begin") + " ";
               } else if (arg.event === "done") {
                 process_block += arg.transcription + "\n\n";// "Audio transcription completed.";
               } if (arg.event === "error") {
-                process_block += "Audio transcription failed: " + String(arg?.msg) + "\n\n";
+                process_block += i18n.t("tools_progress.transcribe_error", { msg: String(arg?.msg) }) + "\n\n";
               } else {
                 process_block += "";
               }
@@ -577,7 +573,7 @@ const sendMessage = async ({
           choicesProposed = response;
         } catch (error) {
           console.error("Failed to generate choices: ", error.name, error.message);
-          notifyError("Failed to generate choices.");
+          notifyError(i18n.t("toast.choices_error"));
         }
       }
 
@@ -665,23 +661,23 @@ const sendMessage = async ({
           } else {
             dispatch(addMemory({ text: memoryText }));
           }
-          notifySuccess("Memory updated successfully.");
+          notifySuccess(i18n.t("toast.memory_updated"));
         }
       }
     } catch (error) {
       console.error("Failed to update memory: ", error.name, error.message);
-      notifyError("Failed to update memory.");
+      notifyError(i18n.t("toast.memory_error"));
     }
 
   } catch (error) {
     // ‌Handle Errors
     if (error.name === "AbortError") {
-      notifyError("Request aborted.");
+      notifyError(i18n.t("toast.request_aborted"));
     } else if (error.message) {
       console.log(error)
       notifyError(error.message);
     } else {
-      notifyError("An unknown error occurred");
+      notifyError(i18n.t("toast.unknown_error"));
     }
   }
 };

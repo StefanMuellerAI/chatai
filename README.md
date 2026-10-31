@@ -111,6 +111,7 @@ The `front` service uses the following configurable attributes in `front.json`:
 - `titleGenerationModel`: Model ID for title generation
 - `memoryGenerationModel`: Model ID for memory generation and updates
 - `announcement`: Text to be displayed in the announcement bar at the top of the window
+- `defaultLanguage`: (Optional) `de` or `en`. Language for everyone who has not picked one in the footer; the browser language is then ignored
 
 The `back` service listens to requests from `front` and interacts with an OpenAI-compatible API endpoint to produce responses. It uses the following configurable attributes in `back.json`:
 - `port`: Port number to listen on. Default: 8081

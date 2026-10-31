@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { useState, useEffect } from "react";
 import { useModal } from "../../modals/ModalContext";
 import { CircleHelp } from "lucide-react";
@@ -64,8 +65,8 @@ export default function TopPSlider({ localState, setLocalState }) {
 
       <div className="w-full">
         <div className="select-none flex justify-between text-[10px] text-tertiary">
-          <span>Focused</span>
-          <span>Diverse</span>
+          <span>{i18n.t("settings.top_p_low")}</span>
+          <span>{i18n.t("settings.top_p_high")}</span>
         </div>
 
         <div className="relative w-full h-4 flex items-center">

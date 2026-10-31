@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import { useAttachments } from "../../hooks/useAttachments";
 import MiniAudioButton from "./MiniAudioButton";
@@ -63,10 +64,10 @@ export default function Attachment({
     const response = await processFile(rawFile);
     setIsProcessing(false);
     if (!response?.content) {
-      notifyError("Error processing file");
+      notifyError(i18n.t("toast.file_process_error"));
       return;
     } else {
-      notifySuccess("File processed successfully");
+      notifySuccess(i18n.t("toast.file_processed"));
     }
     // Save as markdown file and add to attachments
     const processedFile = new File([response.content], file.name + ".md", {
@@ -247,7 +248,7 @@ export default function Attachment({
                 animate-pulse hover:animate-none
                 transition duration-200 ease-in-out text-center"
                 >
-                  Process
+                  {i18n.t("conversation.attachment.process")}
                 </button>
               )}
 
@@ -272,7 +273,7 @@ export default function Attachment({
                     e.stopPropagation();
                     handleRemove();
                   }}
-                  aria-label="Remove file"
+                  aria-label={i18n.t("conversation.attachment.remove")}
                 >
                   <Close size={16} className="opacity-70 hover:opacity-100 transition-opacity" />
                 </button>
@@ -282,7 +283,7 @@ export default function Attachment({
           {/* Process Needed Warning*/}
           <span className="text-[11px] text-yellow-700 dark:text-yellow-400 flex items-center gap-1">
             <WarningAltFilled size={12} className="flex-shrink-0" />
-            File must be processed
+            {i18n.t("conversation.attachment.must_process")}
           </span>
         </div>
       ) : (
@@ -332,7 +333,7 @@ export default function Attachment({
                         index,
                       });
                     }}
-                    aria-label="Remove file"
+                    aria-label={i18n.t("conversation.attachment.remove")}
                   >
                     <Close size={16} className="opacity-70 hover:opacity-100 transition-opacity" />
                   </button>

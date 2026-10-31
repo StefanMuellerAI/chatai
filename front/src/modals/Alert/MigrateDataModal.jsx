@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import BaseModal from "../BaseModal";
 import { useState } from "react";
@@ -42,14 +43,14 @@ export default function MigrateDataModal({
     if (!oldState) {
       console.error("Failed to migrate data");
       dispatch({ type: 'CLEAR_MIGRATION_DATA' });
-      notifyError("Nothing to migrate");
+      notifyError(i18n.t("toast.nothing_to_migrate"));
       onClose();
       return;
     }
     if (!Array.isArray(oldState?.conversations?.conversations)) {
       console.error("Conversations not an array");
       dispatch({ type: 'CLEAR_MIGRATION_DATA' });
-      notifyError("Nothing to migrate");
+      notifyError(i18n.t("toast.nothing_to_migrate"));
       onClose();
       return;
     }
@@ -90,7 +91,7 @@ export default function MigrateDataModal({
 
     } catch (err) {
       console.log("Failed to migrate data", err);
-      notifyError("Couldn't upgrade: " + err.message);
+      notifyError(i18n.t("toast.upgrade_error", { message: err.message }));
       onClose();
     }
     // Close the migration popup

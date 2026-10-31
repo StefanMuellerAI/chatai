@@ -1,6 +1,7 @@
 {
     "mode": "prod",
     "port": 8080,
+    "defaultLanguage": "de",
     "backendPath": "/backend",
     "modelsPath": "/backend/models",
     "userDataPath": "/backend/user",

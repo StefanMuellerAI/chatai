@@ -1,7 +1,10 @@
 
 
 //Demand indicator for each model, used by the ModelSelector
+import { useTranslation } from "react-i18next";
+
 export default function DemandIndicator({ demand, status }) {
+  const { t } = useTranslation();
   const gray = "bg-slate-300 opacity-40";
   const online = (status === "ready");
   const offline = (status === "offline");
@@ -20,13 +23,13 @@ export default function DemandIndicator({ demand, status }) {
 
   let hoverText = ""
   if (unavailable) {
-    hoverText = "Unavailable"
+    hoverText = t("model_selector.status_unavailable")
   } else if (loading) {
-    hoverText = "Loading"
+    hoverText = t("model_selector.status_loading")
   }else if (offline) {
-    hoverText = "Offline"
+    hoverText = t("model_selector.status_offline")
   } else {
-    hoverText = `Demand: ${demand <= 1 ? "low" : demand <= 3 ? "medium" : demand <= 5 ? "high" : "very high"}`
+    hoverText = t("model_selector.demand", { level: t(`model_selector.demand_${demand <= 1 ? "low" : demand <= 3 ? "medium" : demand <= 5 ? "high" : "very_high"}`) })
   }
   return (
     <div className="flex items-center gap-2" data-value="4" data-max="4" data-online="true"

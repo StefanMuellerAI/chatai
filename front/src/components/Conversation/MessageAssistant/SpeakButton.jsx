@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import React, { useState, useRef } from "react";
 import { Volume2, Square } from "lucide-react";
 import generateAudio from "../../../apis/generateAudio";
@@ -80,14 +81,14 @@ export default function SpeakButton({
 
   return speechModule && (
     !isSpeaking ? (
-        <button onClick={handleSpeak} title="Speak" className="inline-grid h-[22px] w-[22px] cursor-pointer" disabled={isSpeaking}>
+        <button onClick={handleSpeak} title={i18n.t("conversation.speak")} className="inline-grid h-[22px] w-[22px] cursor-pointer" disabled={isSpeaking}>
         <Volume2
             className="opacity-20 group-hover:opacity-100 transition-opacity duration-300 h-[22px] w-[22px] cursor-pointer text-[#009EE0]"
             alt="speak_icon"
         />
         </button>
       ) : (
-        <button onClick={handleStop} title="Stop" className="inline-grid h-[22px] w-[22px] cursor-pointer" disabled={!isSpeaking}>
+        <button onClick={handleStop} title={i18n.t("conversation.stop_speaking")} className="inline-grid h-[22px] w-[22px] cursor-pointer" disabled={!isSpeaking}>
         <Square
             className="opacity-20 group-hover:opacity-100 transition-opacity duration-300 h-[22px] w-[22px] cursor-pointer text-[#009EE0]"
             alt="stop_icon"

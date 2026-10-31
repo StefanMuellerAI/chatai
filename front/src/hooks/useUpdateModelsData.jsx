@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 // useUpdateModelsData.js
 import { useState, useEffect, useCallback } from "react";
 import { getModelsData } from "../apis/getModelsData";
@@ -15,17 +16,17 @@ export function useUpdateModelsData() {
 
       if (data instanceof Response) {
         if (data.status === 401) openModal("errorSessionExpired");
-        else notifyError(`Failed to fetch models: ${data.status} ${data.statusText}`);
+        else notifyError(i18n.t("toast.models_fetch_failed", { status: `${data.status} ${data.statusText}` }));
         return;
       }
 
       if (Array.isArray(data) && data.length === 0) {
-        notifyError("No models available or network error");
+        notifyError(i18n.t("toast.models_unavailable"));
         return;
       }
       setModelsData(data);
     } catch {
-      notifyError("Error fetching models");
+      notifyError(i18n.t("toast.models_error"));
     }
   }, []);
 

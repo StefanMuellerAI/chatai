@@ -86,7 +86,7 @@ export default function PromptTextArea({
           ${isDragging ? "opacity-80 " : "opacity-0"}
         `}
       >
-        Drop Here
+        {t("conversation.attachment.drop_here")}
       </span>
     {choices.length > 0 && (
       <div className="px-5 pt-4 pb-2 choice-bar-enter">

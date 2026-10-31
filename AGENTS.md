@@ -173,7 +173,7 @@ inside `db/`. UI strings and i18n keys say topic.
 `secrets/front.json` is read **at Vite startup** and hand-mapped into `process.env.VITE_*`:
 `VITE_BACKEND_ENDPOINT`, `VITE_MODELS_ENDPOINT`, `VITE_USERDATA_ENDPOINT`,
 `VITE_DEFAULT_SETTINGS`, `VITE_TITLE_GENERATION_MODEL`, `VITE_MEMORY_GENERATION_MODEL`,
-`VITE_PROPOSAL_GENERATION_MODEL`, `VITE_ANNOUNCEMENT`, `VITE_MODULE_*`. Consequences: **a new
+`VITE_PROPOSAL_GENERATION_MODEL`, `VITE_ANNOUNCEMENT`, `VITE_DEFAULT_LANGUAGE`, `VITE_MODULE_*`. Consequences: **a new
 config key requires editing `front/vite.config.js` too**, and a config change requires a dev-server
 restart. Read values via `import.meta.env.VITE_*`; they arrive as strings, hence the
 `=== "true"` comparisons.
@@ -222,6 +222,13 @@ Verified in `back/service.mjs`:
   variants; the source of truth is that Redux flag, not the OS preference.
 - **i18n:** user-facing strings go through `react-i18next` `t()`. `i18n/en.js` and `i18n/de.js`
   currently have identical top-level key sets — add every new key to **both**.
+  Outside components (utils, toasts, module-level data) use `i18n.t()` from `src/i18n.jsx`;
+  module-level labels need a getter (`get label() { return i18n.t(...) }`, see `topicIcons.ts`)
+  so they are read after init. The optional `defaultLanguage` in `front.json` makes that language
+  the default and drops browser-language detection (`src/i18n.jsx`).
+- **"Untitled Chat" is a stored sentinel**, not display text: new chats get that literal title and
+  `useTabTitle`/title generation compare against it. Show titles through `displayTitle()` from
+  `utils/chatTitle.js`, which translates it.
 - **Modals** are opened through the `useModal()` hook from `modals/ModalContext.jsx` and built on
   `BaseModal.jsx`; that is the pattern every existing modal in the repo follows.
 - **Upstream calls** each get their own file in `apis/`. Components, hooks and modals import them

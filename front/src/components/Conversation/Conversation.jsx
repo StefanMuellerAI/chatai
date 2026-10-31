@@ -302,7 +302,7 @@ export default function Conversation({
               <Tooltip text={t("common.scroll")}>
               <button
                 onClick={handleScrollButtonClick}
-                aria-label="Scroll to bottom"
+                aria-label={t("common.scroll")}
                 className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 
                          px-2 py-2 rounded-full shadow-lg hover:shadow-xl dark:shadow-dark
                          flex items-center justify-center gap-2 transition-all duration-200 

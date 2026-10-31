@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Close } from "@carbon/icons-react";
+import { useTranslation } from "react-i18next";
 import { closeAnnouncement, selectCountAnnouncement } from "../../Redux/reducers/interfaceSettingsSlice";
 
 export default function AnnouncementBar() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const closeCount = useSelector(selectCountAnnouncement);
   const [showAnnouncement, setShowAnnouncement] = useState(true);
@@ -31,7 +33,7 @@ export default function AnnouncementBar() {
         <button
           onClick={handleClose}
           className="p-0.5 sm:p-1 hover:bg-orange-600 rounded-full transition-colors flex-shrink-0 ml-2 cursor-pointer"
-          aria-label="Close announcement"
+          aria-label={t("common.close_announcement")}
         >
           <Close size={20} className="sm:h-[24px] sm:w-[24px] md:h-[30px] md:w-[30px] cursor-pointer text-tertiary" />
         </button>

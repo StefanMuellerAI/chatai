@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import { useRef, useEffect } from "react";
 
 import { X, Send } from "lucide-react";
@@ -103,14 +104,14 @@ export default function EditBox({
             onClick={() => setEditMode(false)}
             className="text-sm text-gray-500 dark:text-gray-400 px-1 py-1 rounded-full cursor-pointer"
           >
-            Cancel
+            {i18n.t("common.cancel")}
           </button>
           {/* Save edited message button */}
           <button
             onClick={() => handleSave()}
             className="text-md text-primary border dark:text-tertiary rounded-full px-3 py-1 cursor-pointer"
           >
-            Save
+            {i18n.t("common.save")}
           </button>
           {/* Submit edited message button */}
           <button

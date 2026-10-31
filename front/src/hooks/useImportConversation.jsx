@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 // hooks/useImportConversation.ts (or .js)
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -348,10 +349,10 @@ export function useImportConversation() {
       }
       console.log("Navigating to new chat");
       if (!silent) navigate(`/chat/${newId}`, { replace: true });
-      if (!silent) notifySuccess("Chat imported successfully");
+      if (!silent) notifySuccess(i18n.t("toast.import_success"));
     } catch (error) {
       console.error("Import error:", error);
-      notifyError("Failed to import conversation")
+      notifyError(i18n.t("toast.import_error"))
       throw new Error("Failed to import conversation");
     }
   }

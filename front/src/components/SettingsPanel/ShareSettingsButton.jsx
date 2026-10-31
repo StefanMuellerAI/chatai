@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { Trans } from "react-i18next";
 import { useModal } from "../../modals/ModalContext";
 import { Share } from "lucide-react";
@@ -13,7 +14,7 @@ export default function ShareSettingsButton({ localState }) {
   const handleShareSettings = (shareArcana = false, shareMcpServers = false) => {
     // Validate system prompt exists
     if (!localState?.messages[0]?.content[0]?.text) {
-      notifyError("System prompt is missing");
+      notifyError(i18n.t("toast.system_prompt_missing"));
       return;
     }
 
@@ -77,15 +78,15 @@ export default function ShareSettingsButton({ localState }) {
       navigator.clipboard
         .writeText(url)
         .then(() => {
-          notifySuccess("URL copied successfully");
+          notifySuccess(i18n.t("toast.url_copied"));
         })
         .catch((err) => {
           console.error("Failed to copy text: ", err);
-          notifyError("Failed to copy URL to clipboard");
+          notifyError(i18n.t("toast.url_copy_error"));
         });
     } catch (error) {
       console.error("Error generating settings URL:", error);
-      notifyError("Failed to generate settings URL");
+      notifyError(i18n.t("toast.settings_url_error"));
     }
   };
 

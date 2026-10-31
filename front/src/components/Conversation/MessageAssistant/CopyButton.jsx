@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import { useState, useCallback, useEffect } from "react";
 
 import { Copy, CopyCheck } from "lucide-react";
@@ -27,7 +28,7 @@ export default function CopyButton({ message, cooldown_ms = 700 }) {
   }, [copied]);
 
   return (
-    <button onClick={handleCopy} title="Copy message" className="inline-grid h-[18px] w-[18px] cursor-pointer">
+    <button onClick={handleCopy} title={i18n.t("conversation.copy_message")} className="inline-grid h-[18px] w-[18px] cursor-pointer">
         {/* Copy: always instant */}
         <Copy
           className={`row-start-1 col-start-1 h-[18px] w-[18px] text-[#009EE0] transition-opacity ${copied ? 'opacity-0 duration-0' : 'opacity-100 duration-0'}`}

@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { useEffect, useState, useRef } from "react";
 
 export default function AudioPlayer({ file, dataURL }) {
@@ -129,7 +130,7 @@ export default function AudioPlayer({ file, dataURL }) {
   if (error || !dataURL) {
     return (
       <div className="w-full max-w-md p-6 bg-red-50 dark:bg-red-900/30 rounded-2xl border border-red-200 dark:border-red-700/50 mx-auto text-center text-red-600 dark:text-red-300">
-        Failed to load audio
+        {i18n.t("preview.audio_error")}
       </div>
     );
   }

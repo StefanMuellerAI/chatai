@@ -48,6 +48,9 @@ try {
     } else if (key == "proposalGenerationModel") {
       process.env["VITE_PROPOSAL_GENERATION_MODEL"] = value;
       console.log("Proposal generation model:", value);
+    } else if (key == "defaultLanguage") {
+      process.env["VITE_DEFAULT_LANGUAGE"] = value;
+      console.log("Default language:", value);
     } else if (key == "announcement") {
       process.env["VITE_ANNOUNCEMENT"] = value;
       console.log("Announcement:", value);

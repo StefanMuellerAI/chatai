@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 export default function MetaBox({ meta }) {
     // Function to truncate the model name
     const truncateModel = (text, length) => {
@@ -10,9 +11,9 @@ export default function MetaBox({ meta }) {
         parts.push(truncateModel(meta.model, 30));
     }
     if (meta?.usage) {
-        const promptTokens = meta.usage?.prompt_tokens ?? "N/A";
-        const completionTokens = meta.usage?.completion_tokens ?? "N/A";
-        parts.push(`${promptTokens} + ${completionTokens} tokens`);
+        const promptTokens = meta.usage?.prompt_tokens ?? i18n.t("conversation.not_available");
+        const completionTokens = meta.usage?.completion_tokens ?? i18n.t("conversation.not_available");
+        parts.push(`${promptTokens} + ${completionTokens} ${i18n.t("conversation.tokens")}`);
     }
     // Combine with non-breaking spaces around dot
     const displayText = parts.join(" \u00A0•\u00A0 ");

@@ -1,3 +1,4 @@
+import i18n from "../../../i18n";
 import { useState, useEffect } from "react";
 import { Trans } from "react-i18next";
 import BaseModal from "../../../modals/BaseModal";
@@ -214,7 +215,7 @@ export default function ExportChatModal({
       URL.revokeObjectURL(link.href);
     } catch (error) {
       console.log(error)
-      notifyError("An error occurred while exporting to TXT");
+      notifyError(i18n.t("toast.export_error", { format: "TXT" }));
     }
   };
 
@@ -241,10 +242,10 @@ export default function ExportChatModal({
       a.click();
       document.body.removeChild(a);
 
-      notifySuccess("Chat exported successfully");
+      notifySuccess(i18n.t("toast.export_success"));
     } catch (error) {
       console.log(error)
-      notifyError("An error occurred while exporting to JSON");
+      notifyError(i18n.t("toast.export_error", { format: "JSON" }));
     }
   };
 
@@ -475,7 +476,7 @@ export default function ExportChatModal({
       doc.save(generateFileName("pdf"));
     } catch (error) {
       console.log(error)
-      notifyError("An error occurred while exporting to PDF");
+      notifyError(i18n.t("toast.export_error", { format: "PDF" }));
     }
   };
 
