@@ -1,0 +1,361 @@
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import MarkdownRenderer from "./MarkdownRenderer";
+import Typing from "./Typing";
+import CopyButton from "./CopyButton";
+import Attachment from "../../Prompt/Attachment";
+import EditButton from "./EditButton";
+import { RotateCw } from "lucide-react";
+import { useSendMessage } from "../../../hooks/useSendMessage";
+import { useForkConversation } from "../../../hooks/useForkConversation";
+import { useModal } from "../../../modals/ModalContext";
+import MetaBox from "./MetaBox";
+import FeedbackButtons from "./FeedbackButtons";
+import ForkButton from "./ForkButton";
+import SpeakButton from "./SpeakButton";
+
+// Constants
+const MAX_HEIGHT = 200;
+const MIN_HEIGHT = 56;
+
+export default React.memo(({ localState, setLocalState, message_index }) => {
+  //Refs
+  const assistantMessage = useRef(null);
+  const editBox = useRef(null);
+  const feedbackBox = useRef(null);
+  const textareaRefs = useRef([]);
+  const message = localState.messages[message_index];
+  const loading = message?.loading || false;
+  const [renderMode, setRenderMode] = useState("Default");
+  // Define render modes with better styling
+  const renderModes = ["Default", "Markdown", "LaTeX", "Plaintext"];
+  
+  const sendMessage = useSendMessage();
+  const { forkConversation } = useForkConversation(localState);
+  const { confirmAction } = useModal();
+  const feedbackModule = import.meta.env.VITE_MODULE_FEEDBACK === "true";
+
+  //Functions
+  const adjustHeight = () => {
+    if (editBox.current) {
+      editBox.current.style.height = `${MIN_HEIGHT}px`;
+
+      const scrollHeight = editBox.current.scrollHeight;
+      const newHeight = Math.min(scrollHeight, MAX_HEIGHT);
+
+      editBox.current.style.height = `${Math.max(newHeight, MIN_HEIGHT)}px`;
+    }
+  };
+  
+  const sendFeedbackFunc = async (ratingInt, commentStr, expectedStr) => {
+    // Remove messages after current index
+    let newState;
+    setLocalState((prev) => {
+      const newMessages = [...prev.messages];
+      const newMessagesWithFB = [...prev.messages];
+      newMessages.splice(message_index + 1);
+
+      newMessages[newMessages.length-1].feedback = {
+        rating : ratingInt,
+        comment: commentStr,
+        result : expectedStr
+      };
+      console.log("sending feedback");
+      console.log(newMessages[newMessages.length-1].feedback);
+
+      newMessagesWithFB[newMessages.length-1].feedback = newMessages[newMessages.length-1].feedback;
+      newState = { ...prev, messages: newMessages }
+      sendMessage({localState: newState});
+      return { ...prev, messages: newMessagesWithFB };
+    });
+  };
+
+  const [feedbackMode, setFeedbackMode] = useState(false);  
+  const [feedbackText, setFeedbackText] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editedText, setEditedText] = useState("");
+  let submitFeedbackCallback;
+  const injectFeedbackCallback = (cb) =>{
+    submitFeedbackCallback = cb;
+  };
+  // Function to adjust textarea height for specific index
+  const adjustHeightRefs = () => {
+  };
+
+  // Detect outside double clicks
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        assistantMessage.current &&
+        !assistantMessage.current.contains(event.target)
+      )
+        setEditMode(false); // Exit edit mode
+        setFeedbackMode(false);
+    }
+    document.addEventListener("dblclick", handleClickOutside);
+    return () => {
+      document.removeEventListener("dblclick", handleClickOutside);
+    };
+  }, [setEditMode]);
+
+  useEffect(() => {
+    setEditedText(message?.content[0]?.text || "");
+  }, [editMode]);
+
+  useEffect(() => {
+    setFeedbackText(message?.feedback?.comment || "");
+  }, [feedbackMode]);
+
+  useEffect(() => {
+    // Use requestAnimationFrame for smoother height adjustments
+    requestAnimationFrame(() => adjustHeightRefs());
+  }, [editedText]);
+
+  useEffect(() => {
+    // Use requestAnimationFrame for smoother height adjustments
+    requestAnimationFrame(() => adjustHeight());
+  }, [editedText, adjustHeight]);
+
+  // Function to handle saving edited message
+  const handleSave = () => {
+    setLocalState((prev) => {
+      let newMessages = [...prev.messages];
+      newMessages[message_index].content[0].text = editedText;
+      return { ...prev, messages: newMessages, flush: true };
+    });
+    setEditMode(false);
+  };
+
+  // Function to handle saving edited message
+  const handleSaveFB = () => {    
+    const msg = localState.messages[message_index];
+    setFeedbackMode(false);    
+    sendFeedbackFunc(msg.feedback?.rating, feedbackText, msg?.feedback?.result);
+  };
+
+  // Function to handle resending a previous message
+  const handleRetry = async () => {
+    // Remove messages after current index
+
+    setLocalState((prev) => {
+      const newMessages = [...prev.messages];
+      newMessages.splice(message_index);
+      let newState = { ...prev, messages: newMessages };
+      sendMessage({ localState: newState, setLocalState });
+      return { ...prev, messages: newMessages };
+    });
+  };
+
+  const handleForkConversation = useCallback(
+    () =>
+      confirmAction(
+        {
+          warningKey: "warn_fork",
+          messageKey: "alert.fork_confirm",
+          confirmKey: "alert.fork_yes",
+        },
+        () => forkConversation(message_index)
+      ),
+    [confirmAction, forkConversation, message_index]
+  );
+
+  const content = message?.content?.[0]?.text ?? "";
+  const isContentEmpty = !content.trim();
+  const errorMessage = message?.meta?.error || "Unknown Error";
+  return (
+    <div
+      key={message_index}
+      ref={assistantMessage}
+      className={`text-black dark:text-white overflow-hidden
+          ${editMode ? "px-1 pt-1" : "px-3 pt-3"}`}
+    >
+      {isContentEmpty ? (
+        <div
+          className={`flex flex-col
+            ${loading ? "pb-4" : "pb-3"}`}
+        >
+          {loading && <Typing />}
+          {!loading && (
+            <div className="flex flex-col items-center justify-start gap-3 py-1">
+              <div className="text-red-500 dark:text-red-400 text-sm font-medium text-center">
+              {errorMessage}
+              </div>
+              <button
+                onClick={handleRetry}
+                className="cursor-pointer flex items-center gap-2 px-4 py-3 text-sm opacity-100 text-black dark:text-white bg-red-500/40 rounded-full hover:bg-red-400/100 transition-all"
+                disabled={loading}
+              >
+                <RotateCw className="w-4 h-4" />
+                Try Again
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Edit Mode */}
+          {editMode && (
+            <div className="flex flex-col justify-between gap-1">
+              <textarea
+                ref={editBox}
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                onKeyDown={(event) => {
+                  if (
+                    event.key === "Enter" &&
+                    !event.shiftKey &&
+                    editBox.current.value?.trim() !== ""
+                  ) {
+                    event.preventDefault();
+                    handleSave();
+                  } else if (event.key === "Escape") {
+                    event.preventDefault();
+                    setEditMode(false);
+                  }
+                }}
+                className="p-2 outline-none rounded-sm w-full text-sm dark:text-white text-black bg-white dark:bg-bg_secondary_dark resize-y overflow-y-auto"
+                placeholder="Edit response..."
+                style={{
+                  minHeight: `${MIN_HEIGHT}px`,
+                  maxHeight: `${MAX_HEIGHT}px`,
+                }}
+              />
+              <div className="flex gap-4 justify-end w-full gap-2 pt-1 pb-2 px-2">
+                <button
+                  onClick={() => setEditMode(false)}
+                  className="text-sm text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleSave()}
+                  className="text-md text-primary border dark:text-tertiary rounded-full px-3 py-1 cursor-pointer"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          )}
+
+          {feedbackMode && (
+            <div className="flex flex-col justify-between gap-1">
+
+              <div>WARNING: Your feedback will be sent to the server.</div>
+              
+              <textarea
+                ref={feedbackBox}
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                onKeyDown={(event) => {
+                  if (
+                    event.key === "Enter" &&
+                    !event.shiftKey &&
+                    feedbackBox.current.value?.trim() !== ""
+                  ) {
+                    event.preventDefault();
+                    handleSaveFB();
+                  } else if (event.key === "Escape") {
+                    event.preventDefault();
+                    setFeedbackMode(false);
+                  }
+                }}
+                className="p-2 outline-none rounded-sm w-full text-sm dark:text-white text-black bg-white dark:bg-bg_secondary_dark resize-y overflow-y-auto"
+                placeholder="Provide feedback..."
+                style={{
+                  minHeight: `${MIN_HEIGHT}px`,
+                  maxHeight: `${MAX_HEIGHT}px`,
+                }}
+              />
+              <div className="flex gap-4 justify-end w-full gap-2 pt-1 pb-2 px-2">
+                <button
+                  onClick={() => setFeedbackMode(false)}
+                  className="text-sm text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleSaveFB()}
+                  className="text-md text-primary border dark:text-tertiary rounded-full px-3 py-1 cursor-pointer"
+                >
+                  Save & Send FB
+                </button>
+              </div>
+            </div>
+          )}          
+          {/* Display message content */}
+          {!editMode && !feedbackMode && (
+            <div className="flex flex-col gap-4">
+              <MarkdownRenderer isLoading={loading} renderMode={renderMode}>
+                {message.content[0]?.text}
+              </MarkdownRenderer>
+              {/* Attachments Section */}
+              {Array.isArray(message?.content) && message?.content.length > 1 && (
+                <div className="flex flex-wrap gap-2 pr-1 pb-1 max-h-24 sm:max-h-28 md:max-h-40 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+                  {message.content.slice(1).map((attachment, i) => (
+                    <Attachment
+                      key={i}
+                      localState={localState}
+                      setLocalState={setLocalState}
+                      attachment={attachment}
+                      index={i}
+                      inHistory={true}
+                      inAssistant={true}
+                    />
+                  ))}
+                </div>
+              )}
+              {/* Bottom panel for message */}
+              <div className="group flex justify-between w-full mt-1 gap-2">
+                {/* Buttons on the bottom right */}
+                <div className="flex items-center justify-end gap-3 overflow-hidden">
+                  <CopyButton message={message} />
+                  <SpeakButton message={message} />
+                  <ForkButton handleForkConversation={handleForkConversation} />
+                  <EditButton setEditMode={setEditMode} />
+                  {/* Vertical seperator like | */}
+                  <div className="hidden md:flex w-px h-6 bg-gray-200 dark:bg-gray-600 opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  {/* Render Mode Selector on the bottom left*/}
+                  <div className="hidden md:flex h-6 bg-gray-200 dark:bg-gray-600 dark:bg-gray-700  rounded-xl overflow-hidden opacity-25 group-hover:opacity-100 transition-opacity duration-300 ">
+                    {renderModes.map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={() => !loading && setRenderMode(mode)}
+                        className={`px-2 text-xs font-medium rounded-xl transition-all duration-300 ease-in-out min-w-[60px] cursor-pointer select-none
+                    ${loading ? "cursor-not-allowed opacity-25" : ""}
+                    ${
+                      renderMode === mode
+                        ? "bg-tertiary text-white rounded-xl"
+                        : "bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    }
+                    `}
+                        disabled={loading}
+                      >
+                        {mode}
+                      </button>
+                    ))}
+                  </div>
+                  { /* Show message metadata */
+                  message?.meta && (<div className="w-px h-6 bg-gray-200 dark:bg-gray-600 opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>)}
+                  {
+                  message?.meta && (
+                    <MetaBox meta={message.meta} /> 
+                  )}  
+                </div>
+
+                {feedbackModule && (
+                  <FeedbackButtons
+                    localState={localState}
+                    setLocalState={setLocalState}
+                    message_index={message_index}
+                    setFeedbackMode={setFeedbackMode} 
+                    sendFeedbackFunc={sendFeedbackFunc}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      
+    </div>
+  );
+});

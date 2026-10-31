@@ -1,0 +1,47 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: SAIA
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Ali
+    family-names: Doosthosseini
+    email: ali.doosthosseini@uni-goettingen.de
+    affiliation: University of Göttingen
+    orcid: 'https://orcid.org/0000-0002-0654-1268'
+  - given-names: Jonathan
+    family-names: Decker
+    email: jonathan.decker@uni-goettingen.de
+    affiliation: University of Göttingen
+    orcid: 'https://orcid.org/0000-0002-7384-7304'
+  - given-names: Hendrik
+    family-names: Nolte
+    email: hendrik.nolte@gwdg.de
+    affiliation: GWDG
+    orcid: 'https://orcid.org/0000-0003-2138-8510'
+  - given-names: Julian
+    name-particle: M.
+    family-names: Kunkel
+    email: julian.kunkel@gwdg.de
+    affiliation: GWDG
+    orcid: 'https://orcid.org/0000-0002-6915-1179'
+identifiers:
+  - type: doi
+    value: 10.1007/s11227-026-08508-3
+  - type: url
+    value: >-
+      https://link.springer.com/article/10.1007/s11227-026-08508-3
+repository-code: 'https://github.com/gwdg/chat-ai'
+url: 'https://chat-ai.academiccloud.de'
+abstract: "Recent developments indicate a shift toward web services that employ ever-larger AI models, e.g., large language models (LLMs), requiring powerful and expensive hardware for inference. High-performance computing (HPC) systems are commonly equipped with such hardware for the purpose of large-scale computation tasks. However, HPC infrastructure is inherently unsuitable for hosting real-time web services due to network, security, and scheduling constraints. While various efforts exist to integrate external scheduling solutions, these often require compromises in terms of security or usability for existing HPC users. In this paper, we present SAIA, a Slurm-native platform consisting of a scheduler and a proxy. The scheduler interacts with Slurm to ensure the availability and scalability of services, while the proxy provides external access, which is secured via confined SSH commands. We have demonstrated SAIA’s applicability by deploying a large-scale LLM web service that has served over 100\_000 users."
+keywords:
+  - AI
+  - HPC
+  - Slurm
+license: GPL-3.0
+version: v0.9.3
+date-released: '2024-02-22'

@@ -1,0 +1,420 @@
+@import "katex/dist/katex.min.css";
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* ──────────────────────────────────────────────────────────
+   Theme + base
+   ────────────────────────────────────────────────────────── */
+/* Light mode (default) */
+:root {
+  /* … keep your other vars … */
+  --scroll-thumb: #9ca3af; /* Tailwind gray-400 */
+  --scroll-track: transparent;
+
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+  scrollbar-width: thin;
+}
+
+/* Dark mode */
+.dark {
+  --scroll-thumb: #6b7280; /* Tailwind gray-500 (neutral on dark) */
+  --scroll-track: #1f2937; /* Tailwind gray-800 (subtle track) */
+
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  /* Do NOT hide page overflow globally. Let containers manage it. */
+  overflow: visible;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Remove global scrollbar hiding */
+.body {
+  /* leaving class in case it's referenced elsewhere, but not hiding scroll */
+  overflow-y: visible !important;
+}
+
+/* Keep Joyride tooltip theme variables */
+:root {
+  --tooltip-bg: #ffffff;
+  --tooltip-text: #333333;
+}
+[class*="dark"] {
+  --tooltip-bg: #1f2937;
+  --tooltip-text: #f9fafb;
+}
+
+/* Ensure smooth zoom transition for tours */
+body {
+  transition: zoom 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Global scrollbar styling (WebKit/Chromium/Safari/Edge)
+   Applies to ALL scrollable elements (no class needed)
+   ────────────────────────────────────────────────────────── */
+*::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--tertiary);
+  border-radius: 2px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  filter: brightness(0.9);
+}
+
+/* Remove scrollbar buttons */
+*::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Corner */
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Footer animation
+   ────────────────────────────────────────────────────────── */
+.footer {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.footer-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+.footer-hidden {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+.slide-out-right {
+  animation: slideOutRight 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Code / markdown tweaks
+   ────────────────────────────────────────────────────────── */
+.custom-syntax-highlighter {
+  margin: 0px !important;
+  background: inherit !important;
+}
+
+.react-markdown-output h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+.react-markdown-output h2 {
+  font-size: 20px;
+  font-weight: bold;
+}
+.react-markdown-output h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+.react-markdown-output p {
+  margin: 0.5em 0;
+  font-size: 14px;
+}
+.react-markdown-output ol {
+  list-style: number;
+  padding: 0;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+.react-markdown-output ul {
+  list-style: inherit;
+  padding: 0;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+.react-markdown-output li {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Code blocks: allow horizontal scrolling; do NOT hide scrollbars */
+.react-markdown-output.light pre code,
+.react-markdown-output.dark pre code {
+  background-color: inherit;
+  color: inherit !important;
+  font-size: 14px !important;
+  width: 100%;
+  display: inline-block;
+  overflow-x: auto; /* let scrollbar show if needed */
+  -ms-overflow-style: auto;
+  scrollbar-width: thin; /* Firefox respects global but we ensure thin here */
+}
+
+.react-markdown-output.light pre {
+  background-color: #fff;
+  color: black;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+.react-markdown-output.dark pre {
+  background-color: #000;
+  color: #fff;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+/* SVG stroke by theme containers (if used) */
+.light-theme svg path {
+  stroke: #000;
+}
+.dark-theme svg path {
+  stroke: #fff;
+}
+
+/* Toasts */
+.light-toast {
+  background: #ffffff;
+  color: #000000;
+  font-size: 14px;
+}
+.dark-toast {
+  background: #2b2b2b;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+@media (hover: none) {
+  .group-hover\:block {
+    display: none !important;
+  }
+}
+
+.code {
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* Typing dots */
+.typing {
+  width: 5em;
+  height: 2em;
+  position: relative;
+  padding: 10px;
+  margin-left: 5px;
+}
+.typing__dot {
+  float: left;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: loadingFade 1s infinite;
+}
+.typing__dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.typing__dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing__dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingFade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Slider + ticks */
+.tick-marks-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  background-color: #009ee0;
+  height: 2px;
+}
+.tick-mark {
+  height: 8px;
+  width: 1px;
+  background-color: #009ee0;
+  align-self: center;
+}
+
+.slider-input {
+  width: calc(100% + 16px);
+  height: 2px;
+  appearance: none;
+  background: transparent;
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.slider-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: #009ee0;
+  border-radius: 50%;
+  border: none;
+}
+.slider-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: #009ee0;
+  border-radius: 50%;
+  margin-top: -7px;
+  border: none;
+}
+.slider-input::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: #009ee0;
+  border-radius: 50%;
+  margin-top: -7px;
+  border: none;
+}
+.slider-tooltip {
+  position: absolute;
+  top: -40px;
+  width: 32px;
+  color: #009ee0;
+  background-color: var(--tooltip-bg-color, white);
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Toastify containers */
+@media only screen and (max-width: 768px) {
+  .Toastify__toast-container {
+    right: 0px;
+    width: 100%;
+    top: 0px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .Toastify__toast-container {
+    right: 0px;
+    top: 0px;
+  }
+}
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+/* Math blocks */
+.custom-syntax-highlighter {
+  background: transparent !important;
+}
+.math-inline {
+  padding: 0 0.25rem;
+}
+.math-display {
+  display: block;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+/* Utilities */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Choice proposer suggestions */
+@keyframes choice-bar-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes choice-chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.choice-bar-enter {
+  animation: choice-bar-in 220ms ease-out both;
+}
+.choice-chip-enter {
+  animation: choice-chip-in 260ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .choice-bar-enter,
+  .choice-chip-enter {
+    animation: none !important;
+  }
+}

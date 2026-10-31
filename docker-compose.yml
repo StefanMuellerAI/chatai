@@ -1,0 +1,28 @@
+services:
+  front:
+    image: chat-ai-front:latest
+    build: ./front
+    network_mode: "host"
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/node_modules
+    secrets:
+      - front
+    restart: on-failure
+
+  back:
+    image: chat-ai-back:latest
+    build: ./back
+    network_mode: "host"
+    volumes:
+      - ./back:/usr/src/app
+      - /usr/src/app/node_modules
+    secrets:
+      - back
+    restart: on-failure
+
+secrets:
+  front:
+    file: ./secrets/front.json
+  back:
+    file: ./secrets/back.json

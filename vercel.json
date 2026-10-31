@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci --prefix back --no-audit --no-fund && npm ci --prefix front --no-audit --no-fund",
+  "buildCommand": "cd front && CONFIG_LOCATION=../vercel/front.json npx vite build",
+  "outputDirectory": "front/dist",
+  "functions": {
+    "api/index.mjs": {
+      "maxDuration": 60,
+      "includeFiles": "{vercel/back.json,mock/*.mjs}"
+    }
+  },
+  "rewrites": [
+    { "source": "/backend/:path*", "destination": "/api/index?__service=backend&__path=:path*" },
+    { "source": "/v1/:path*", "destination": "/api/index?__service=v1&__path=:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

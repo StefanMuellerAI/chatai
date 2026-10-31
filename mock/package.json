@@ -1,0 +1,13 @@
+{
+  "name": "chat-ai-mock",
+  "displayName": "Chat AI Mock API",
+  "version": "1.0.0",
+  "description": "Simulated OpenAI-compatible endpoint with demo models for the Chat AI web interface",
+  "main": "server.mjs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "license": "GPL-3.0-only"
+}

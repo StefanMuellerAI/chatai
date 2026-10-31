@@ -1,0 +1,6 @@
+{
+    "port": 8081,
+    "apiEndpoint": "http://localhost:8090/v1",
+    "apiKey": "mock-key-not-secret",
+    "serviceName": "Chat AI Mock Demo"
+}
