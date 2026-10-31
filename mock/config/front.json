@@ -4,28 +4,31 @@
     "backendPath": "http://localhost:8081",
     "modelsPath": "http://localhost:8081/models",
     "userDataPath": "http://localhost:8081/user",
-    "proposalGenerationModel": "mock-assistant",
-    "titleGenerationModel": "mock-assistant",
-    "memoryGenerationModel": "mock-assistant",
+    "proposalGenerationModel": "qwen3-30b-a3b-instruct-2507",
+    "titleGenerationModel": "qwen3-30b-a3b-instruct-2507",
+    "memoryGenerationModel": "qwen3-30b-a3b-instruct-2507",
     "modules": {
         "tools": true,
         "feedback": false,
         "choices": false,
         "speech": {
-            "model": "mock-tts",
-            "voice": "demo"
+            "model": "kokoro",
+            "voice": "af_bella"
         }
     },
     "default": {
         "model": {
-            "id": "mock-assistant",
-            "name": "Mock Assistent"
+            "id": "qwen3-30b-a3b-instruct-2507",
+            "name": "Qwen 3 30B A3B Instruct 2507"
         },
         "messages": [
-            {"role": "system", "content": "You are a helpful assistant"}
+            {
+                "role": "system",
+                "content": "You are a helpful assistant"
+            }
         ],
         "top_p": 0.5,
         "temperature": 0.5
     },
-    "announcement": "Demo-Modus: Alle Modelle sind simuliert (Mock-Server). Es wird kein echtes KI-Modell aufgerufen."
+    "announcement": "Demo-Modus: Alle Modelle sind simuliert (Mock-Server). Namen und IDs entsprechen der Academic Cloud, es wird aber kein echtes KI-Modell aufgerufen."
 }

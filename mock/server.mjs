@@ -6,11 +6,13 @@
 //   POST /v1/chat/completions       streamed (SSE) or plain completions, simulated tools
 //   POST /v1/audio/speech           "text to speech" (one tone per word, WAV)
 //   POST /v1/documents/convert/file "Docling" document conversion to Markdown
+//   POST /v1/embeddings             deterministic pseudo-embeddings
 //
 // No dependencies: run with `node server.mjs`.
 import http from "node:http";
 import { randomUUID } from "node:crypto";
-import { MODELS, STREAM_DELAY, analyze, respond, isTitleRequest, makeTitle, isMemoryRequest, makeMemory } from "./models.mjs";
+import { CHAT_MODELS, EMBEDDING_MODELS, ALL_MODELS, publicModel } from "./catalog.mjs";
+import { STREAM_DELAY, analyze, respond, isTitleRequest, makeTitle, isMemoryRequest, makeMemory } from "./models.mjs";
 import { makeSpeechWav, makePromptSvg, parseMultipart, extractPdfText } from "./media.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 8090);
@@ -129,8 +131,8 @@ async function chatCompletions(req, res) {
   } catch {
     return sendError(res, 400, "Invalid JSON body", "invalid_request_error");
   }
-  const model = MODELS.find((m) => m.id === body.model);
   const ctx = analyze(body);
+  const model = ctx.model;
   const internal = isTitleRequest(ctx) ? "title" : isMemoryRequest(ctx) ? "memory" : null;
 
   log(
@@ -143,6 +145,9 @@ async function chatCompletions(req, res) {
   );
 
   if (!Array.isArray(body.messages)) return sendError(res, 422, "messages must be an array", "invalid_request_error");
+  if (EMBEDDING_MODELS.some((m) => m.id === body.model)) {
+    return sendError(res, 400, `'${body.model}' is an embedding model, use /v1/embeddings (mock).`, "invalid_request_error");
+  }
   if (!model) return sendError(res, 404, `The model '${body.model}' does not exist (mock).`, "invalid_request_error", "model_not_found");
   if (model.status !== "ready") {
     return sendError(res, 503, `Das Modell '${model.id}' ist offline (simulierter Ausfall).`, "service_unavailable", "model_offline");
@@ -247,6 +252,26 @@ async function convertDocument(req, res) {
   });
 }
 
+// Deterministic pseudo-embeddings: same text, same unit vector.
+async function embeddings(req, res) {
+  const body = JSON.parse((await readBody(req)).toString("utf8") || "{}");
+  const model = EMBEDDING_MODELS.find((m) => m.id === body.model);
+  if (!model) return sendError(res, 404, `The embedding model '${body.model}' does not exist (mock).`, "invalid_request_error", "model_not_found");
+  const inputs = Array.isArray(body.input) ? body.input : [body.input ?? ""];
+  log(`embeddings model=${model.id} inputs=${inputs.length}`);
+  const data = inputs.map((text, index) => {
+    let seed = [...String(text)].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) >>> 0, 2166136261);
+    const vector = Array.from({ length: model.mock.dimensions }, () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0; // LCG
+      return seed / 2 ** 31 - 1;
+    });
+    const norm = Math.hypot(...vector) || 1;
+    return { object: "embedding", index, embedding: vector.map((v) => Number((v / norm).toFixed(6))) };
+  });
+  const tokens = inputs.reduce((sum, text) => sum + estimateTokens(String(text)), 0);
+  sendJson(res, 200, { object: "list", model: model.id, data, usage: { prompt_tokens: tokens, total_tokens: tokens } });
+}
+
 // ---------------------------------------------------------------------------
 // Router
 // ---------------------------------------------------------------------------
@@ -259,18 +284,23 @@ const server = http.createServer(async (req, res) => {
   const path = new URL(req.url, "http://localhost").pathname.replace(/^\/v1/, "").replace(/\/$/, "") || "/";
   try {
     if (req.method === "GET" && path === "/models") {
-      log("models");
-      return sendJson(res, 200, { object: "list", data: MODELS });
+      // The Chat AI back service identifies itself with "inference-portal";
+      // it only gets chat models. Direct API clients also see embedding models.
+      const fromWebInterface = !!req.headers["inference-portal"];
+      const list = fromWebInterface ? CHAT_MODELS : ALL_MODELS;
+      log(`models count=${list.length}${fromWebInterface ? " (web interface)" : ""}`);
+      return sendJson(res, 200, { object: "list", data: list.map(publicModel) });
     }
     if (req.method === "POST" && path === "/chat/completions") return await chatCompletions(req, res);
     if (req.method === "POST" && path === "/audio/speech") return await speech(req, res);
     if (req.method === "POST" && path === "/documents/convert/file") return await convertDocument(req, res);
+    if (req.method === "POST" && path === "/embeddings") return await embeddings(req, res);
     if (req.method === "GET" && (path === "/" || path === "/health")) {
       return sendJson(res, 200, {
         service: "Chat AI mock API",
         status: "ok",
-        endpoints: ["GET /v1/models", "POST /v1/chat/completions", "POST /v1/audio/speech", "POST /v1/documents/convert/file"],
-        models: MODELS.map((m) => m.id),
+        endpoints: ["GET /v1/models", "POST /v1/chat/completions", "POST /v1/audio/speech", "POST /v1/documents/convert/file", "POST /v1/embeddings"],
+        models: ALL_MODELS.map((m) => m.id),
       });
     }
     sendError(res, 404, `Unknown endpoint ${req.method} ${req.url}`, "not_found");
@@ -282,5 +312,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  log(`Chat AI mock API listening on http://localhost:${PORT}/v1 with ${MODELS.length} models`);
+  log(`Chat AI mock API listening on http://localhost:${PORT}/v1 with ${CHAT_MODELS.length} chat and ${EMBEDDING_MODELS.length} embedding models`);
 });

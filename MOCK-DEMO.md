@@ -2,12 +2,14 @@
 
 Dieses Repository enthält die Weboberfläche von **Chat AI** der GWDG (Academic Cloud) aus
 [gwdg/chat-ai](https://github.com/gwdg/chat-ai) (Version 1.0.2, inklusive Git-Historie) und dazu
-einen **Mock-Server**, der eine OpenAI-kompatible API mit acht simulierten Modellen bereitstellt.
-So lässt sich ChatAI komplett lokal vorführen: ohne API-Key, ohne GPU und ohne dass Daten den
-Rechner verlassen.
+einen **Mock-Server**, der eine OpenAI-kompatible API bereitstellt. Er simuliert **alle Modelle der
+Academic Cloud unter ihren echten Namen und IDs** – 45 Chat-Modelle plus 3 Embedding-Modelle –
+und dazu 4 Demo-Modelle für Sonderfälle. So lässt sich ChatAI komplett lokal vorführen: ohne
+API-Key, ohne GPU und ohne dass Daten den Rechner verlassen.
 
-> Die Mock-Modelle sind kleine Regelwerke, keine echten KI-Modelle. Sie zeigen, **was ChatAI an ein
-> Modell schickt und wie es Antworten darstellt**.
+> Die Mock-Modelle sind kleine Regelwerke, keine echten KI-Modelle. Sie tragen Namen, IDs und
+> Fähigkeiten der echten Modelle und zeigen, **was ChatAI an ein Modell schickt und wie es Antworten
+> darstellt**.
 
 ## Starten
 
@@ -40,50 +42,152 @@ Browser ──> front :8080 ──> back :8081 ──> Mock-API :8090/v1        
 |---|---|---|
 | Frontend | `front/` | React-App, läuft komplett im Browser. Chats liegen nur lokal (IndexedDB). |
 | Backend | `back/` | Kleiner Proxy: hält den API-Key serverseitig und leitet Anfragen weiter. |
-| Mock-API | `mock/` | Ersetzt die GWDG-API: `/v1/models`, `/v1/chat/completions` (Streaming), `/v1/audio/speech`, `/v1/documents/convert/file`. Keine Abhängigkeiten, nur Node. |
+| Mock-API | `mock/` | Ersetzt die GWDG-API: `/v1/models`, `/v1/chat/completions` (Streaming), `/v1/embeddings`, `/v1/audio/speech`, `/v1/documents/convert/file`. Keine Abhängigkeiten, nur Node. |
 
 Der einzige Unterschied zum Produktivbetrieb ist der `apiEndpoint` in `mock/config/back.json`.
 Das Frontend ist unverändert und weiß nichts vom Mock.
 
 ## Die simulierten Modelle
 
-| Modell | Zeigt |
-|---|---|
-| **Mock Assistent** (Standard) | Reagiert auf Stichworte („Hilfe“, „Wie funktioniert ChatAI?“, „Tabelle“, „Code“, „Formel“, „Ich heiße …“). Sonst zeigt er, welche Parameter ChatAI mitgeschickt hat (Temperatur, top_p, Systemprompt, Anhänge, Tools …). |
-| **Mock Reasoning** | Streamt erst einen Denkprozess (aufklappbarer „Reasoning Process“-Block), dann die Antwort. Die Denk-Stufe (none/low/medium/high) kommt aus `front/src/config/models/mock-reasoning.json`. |
-| **Mock Vision** | Nimmt Bilder an und nennt Format, Größe und Auflösung. Nur Modelle mit Eingabetyp `image` erlauben Bild-Uploads. |
-| **Mock Markdown-Showcase** | Tabellen, Code mit Syntax-Highlighting, LaTeX-Formeln, Listen. |
-| **Mock Echo** | Gibt die Nachricht unverändert zurück. |
-| **Mock Langsam (hohe Last)** | Streamt Wort für Wort; die Auslastungsanzeige steht auf orange. Gut für den Stopp-Button. |
-| **Mock Cloud (External)** | Gilt als externes Modell: ChatAI zeigt einen Datenschutz-Hinweis und sperrt die Tools. |
-| **Mock Offline** | Status „offline“: Hinweisfenster beim Auswählen, Fehlermeldung beim Senden. |
+Namen und IDs stammen aus der GWDG-Dokumentation ([Available Models](https://docs.hpc.gwdg.de/services/ai-services/chat-ai/models/),
+[SAIA-API-Modellnamen](https://docs.hpc.gwdg.de/services/ai-services/saia/), Stand 31.10.2026), aus den
+Modell-Konfigurationen in `front/src/config/models/` und für ältere OpenAI-Modelle aus
+[gwdg/saia-hub](https://github.com/gwdg/saia-hub). Release, Kontext und Parameter sind aus der
+GWDG-Doku übernommen, wo sie dort stehen; sonst bleiben die Felder leer.
+
+So verhalten sich die Modelle:
+
+- **Bilder / Audio / Video:** Nur Modelle mit dem passenden Eingabetyp erlauben Uploads. Der Mock
+  nennt Format, Größe und Auflösung.
+- **Thinking:** Open-Weight- und Claude-Modelle streamen einen sichtbaren Denkprozess
+  („Reasoning Process“). Die Denk-Stufen kommen aus `front/src/config/models/<id>.json`, also
+  genau wie beim echten Modell.
+- **Reasoning (intern):** OpenAI-Modelle denken intern; ChatAI zeigt den Denkprozess nicht an.
+  Der Mock nennt nur die gewählte Stufe.
+- **Extern:** Modelle mit „(External)“ im Namen lösen den Datenschutz-Hinweis aus, Tools sind
+  gesperrt.
+- **Qwen 3 Coder Next** antwortet mit einem Code-Gerüst.
+
+**Open-Weight, bei der GWDG gehostet** (10)
+
+| Name | ID | Fähigkeiten |
+|---|---|---|
+| DeepSeek V4 Flash 0731 | `deepseek-v4-flash-0731` | Thinking |
+| Gemma 4 31B Instruct | `gemma-4-31b-it` | Bilder, Thinking |
+| GLM 5.3 Flash | `glm-5.3-flash` | Bilder, Thinking |
+| Meta Llama 3.1 8B Instruct | `meta-llama-3.1-8b-instruct` | – |
+| Qwen 3 30B A3B Instruct 2507 | `qwen3-30b-a3b-instruct-2507` | – |
+| Qwen 3 Coder Next | `qwen3-coder-next` | – |
+| Qwen 3 Omni 30B A3B Instruct | `qwen3-omni-30b-a3b-instruct` | Bilder, Audio, Video |
+| Qwen 3.5 397B A17B | `qwen3.5-397b-a17b` | Bilder, Thinking |
+| Qwen 3.6 35B A3B | `qwen3.6-35b-a3b` | Bilder, Thinking |
+| Qwen 3.8 27B | `qwen3.8-27b` | Bilder, Video, Thinking |
+
+**Extern (OpenAI, Anthropic)** (20)
+
+| Name | ID | Fähigkeiten |
+|---|---|---|
+| Claude Sonnet 5 (External) | `claude-sonnet-5` | Bilder, Thinking |
+| Claude Sonnet 4.6 (External) | `claude-sonnet-4-6` | Bilder, Thinking |
+| GPT-5.6 Sol (External) | `openai-gpt5.6-sol` | Bilder, Reasoning (intern) |
+| GPT-5.6 Terra (External) | `openai-gpt5.6-terra` | Bilder, Reasoning (intern) |
+| GPT-5.6 Luna (External) | `openai-gpt5.6-luna` | Bilder, Reasoning (intern) |
+| GPT-5.5 (External) | `openai-gpt5.5` | Bilder, Reasoning (intern) |
+| GPT-5.4 (External) | `openai-gpt5.4` | Bilder, Reasoning (intern) |
+| GPT-5.4 Mini (External) | `openai-gpt5.4-mini` | Bilder, Reasoning (intern) |
+| GPT-5.4 Nano (External) | `openai-gpt5.4-nano` | Bilder, Reasoning (intern) |
+| GPT-5.2 (External) | `openai-gpt5.2` | Bilder, Reasoning (intern) |
+| GPT-5.1 (External) | `openai-gpt5.1` | Bilder, Reasoning (intern) |
+| GPT-5 (External) | `openai-gpt5` | Bilder, Reasoning (intern) |
+| GPT-5 Mini (External) | `openai-gpt5-mini` | Bilder, Reasoning (intern) |
+| GPT-5 Nano (External) | `openai-gpt5-nano` | Bilder, Reasoning (intern) |
+| o3 (External) | `openai-o3` | Bilder, Reasoning (intern) |
+| o3-mini (External) | `openai-o3-mini` | Reasoning (intern) |
+| GPT-4.1 (External) | `openai-gpt41` | Bilder |
+| GPT-4.1 Mini (External) | `openai-gpt41-mini` | Bilder |
+| o1 (External) | `openai-o1` | Bilder, Reasoning (intern) |
+| o1 Mini (External) | `openai-o1-mini` | Reasoning (intern) |
+
+**Kommerzielles Angebot (nur mit Freischaltung)** (10)
+
+| Name | ID | Fähigkeiten |
+|---|---|---|
+| GPT-6 Sol (External) | `openai-gpt6-sol` | Bilder, Reasoning (intern) |
+| GPT-6 Astra (External) | `openai-gpt6-astra` | Bilder, Reasoning (intern) |
+| GPT-6 Luna (External) | `openai-gpt6-luna` | Bilder, Reasoning (intern) |
+| Claude Opus 5.5 (External) | `claude-opus-5-5` | Bilder, Thinking |
+| Claude Opus 5 (External) | `claude-opus-5` | Bilder, Thinking |
+| Claude Opus 4.8 (External) | `claude-opus-4-8` | Bilder, Thinking |
+| Claude Opus 4.7 (External) | `claude-opus-4-7` | Bilder, Thinking |
+| Claude Opus 4.6 (External) | `claude-opus-4-6` | Bilder, Thinking |
+| Claude Fable 5.1 (External) | `claude-fable-5-1` | Bilder, Thinking |
+| Claude Fable 5 (External) | `claude-fable-5` | Bilder, Thinking |
+
+**Im Chat-AI-Code konfiguriert, aktuell nicht in der GWDG-Liste** (5)
+
+| Name | ID | Fähigkeiten |
+|---|---|---|
+| o4-mini (External) | `openai-o4-mini` | Bilder, Reasoning (intern) |
+| GPT OSS 120B | `openai-gpt-oss-120b` | Thinking |
+| Mistral Medium 3.5 128B | `mistral-medium-3.5-128b` | Thinking |
+| GLM 4.7 | `glm-4.7` | Thinking |
+| Qwen 3.5 122B A10B | `qwen3.5-122b-a10b` | Bilder, Thinking |
+
+**Demo-Modelle für Sonderfälle** (4)
+
+| Name | ID | Fähigkeiten |
+|---|---|---|
+| Demo: Echo | `mock-echo` | – |
+| Demo: Markdown-Showcase | `mock-showcase` | – |
+| Demo: Langsam (hohe Last) | `mock-slow` | – |
+| Demo: Offline | `mock-offline` | – |
+
+**Embeddings (nur API)** (3)
+
+| Name | ID | Dimensionen |
+|---|---|---:|
+| E5 Mistral 7B Instruct | `e5-mistral-7b-instruct` | 4096 |
+| Multilingual E5 Large Instruct | `multilingual-e5-large-instruct` | 1024 |
+| Qwen 3 Embedding 4B | `qwen3-embedding-4b` | 2560 |
+
+Die Embedding-Modelle sind wie bei der GWDG nur über die API erreichbar: `GET /v1/models` liefert
+sie an API-Clients aus, an die ChatAI-Oberfläche aber nicht (der Proxy meldet sich mit dem Header
+`inference-portal`). Separate GWDG-Dienste wie Image AI (FLUX.1-schnell, Qwen-Image-Edit) und
+Voice AI (Whisper) gehören nicht zur Chat-AI-Modellliste und sind nicht enthalten.
 
 Auch die Hintergrundaufgaben von ChatAI werden bedient: **Chat-Titel** und **Gedächtnis**
-(Memory) laufen über `mock-assistant`.
+(Memory) laufen wie in der Original-Beispielkonfiguration über `qwen3-30b-a3b-instruct-2507`.
+
+`node mock/check-catalog.mjs` prüft, ob jedes im Frontend konfigurierte Modell einen Mock hat –
+hilfreich nach einem Update aus dem Original-Repo.
 
 ## Vorführung in zehn Schritten
 
-1. **„Hallo“** schreiben – Begrüßung und Übersicht. Der Chat bekommt automatisch einen Titel.
-2. **„Wie funktioniert ChatAI?“** – Architektur und Datenfluss.
-3. Unten im Modellmenü **Mock Reasoning** wählen und eine Frage stellen. Den Block „Reasoning
-   Process“ aufklappen. Über das Regler-Symbol (Einstellungen) die Denk-Stufe ändern.
-4. **Mock Vision** wählen, über die Büroklammer ein Bild anhängen und fragen.
-5. Ein **PDF** anhängen, auf **Process** tippen und z. B. „Fasse das zusammen“ schreiben.
+1. **„Hallo“** schreiben – das Standardmodell *Qwen 3 30B A3B Instruct 2507* stellt sich mit seinen
+   Eckdaten vor. Der Chat bekommt automatisch einen Titel.
+2. **„Wie funktioniert ChatAI?“** – Architektur und Datenfluss. **„Modelle“** zeigt alle simulierten
+   Modelle nach Kategorie.
+3. Unten im Modellmenü suchen und **Qwen 3.8 27B** wählen, eine Frage stellen und den Block
+   „Reasoning Process“ aufklappen. Über das Regler-Symbol die Denk-Stufe ändern.
+4. Bei **Qwen 3.8 27B** oder **Gemma 4 31B Instruct** über die Büroklammer ein Bild anhängen.
+5. **Claude Sonnet 5 (External)** oder **GPT-5.5 (External)** wählen: Datenschutz-Hinweis, gesperrte
+   Tools, sichtbares bzw. internes Reasoning.
+6. Ein **PDF** anhängen, auf **Process** tippen und z. B. „Fasse das zusammen“ schreiben.
    Der Mock-Server spielt dabei Docling und liest den Text einfacher PDFs aus.
-6. Über das **Schraubenschlüssel-Symbol** die Tools einschalten und **Web Search** aktivieren.
-   Dann eine Frage stellen – oder „Erstelle ein Bild von einem Leuchtturm“ (Bildgenerierung ist
-   standardmäßig aktiv). Die Tool-Schritte erscheinen im aufklappbaren Block.
-7. **Gedächtnis:** unten links auf *Sample User* → *Memories* → *Learn*. Dann „Ich heiße …“
+7. Mit einem GWDG-Modell über das **Schraubenschlüssel-Symbol** die Tools einschalten und
+   **Web Search** aktivieren. Dann eine Frage stellen – oder „Erstelle ein Bild von einem Leuchtturm“
+   (Bildgenerierung ist standardmäßig aktiv). Die Tool-Schritte erscheinen im aufklappbaren Block.
+8. **Gedächtnis:** unten links auf *Sample User* → *Memories* → *Learn*. Dann „Ich heiße …“
    schreiben, einen neuen Chat öffnen und „Hallo“ sagen.
-8. Unter einer Antwort auf das **Lautsprecher-Symbol** tippen: Der Mock „liest vor“ (ein Ton pro Wort).
-9. **Mock Langsam** wählen und während der Antwort auf **Stopp** tippen.
-10. **Mock Offline** und **Mock Cloud (External)** wählen, um Fehlerfall und Datenschutz-Hinweis zu zeigen.
+9. Unter einer Antwort auf das **Lautsprecher-Symbol** tippen: Der Mock „liest vor“ (ein Ton pro Wort).
+10. **Demo: Langsam** wählen und während der Antwort auf **Stopp** tippen; **Demo: Offline** zeigt
+    Hinweisfenster und Fehlermeldung.
 
 Im Terminal protokolliert der Mock-Server jede Anfrage, z. B.:
 
 ```text
-16:04:52 [mock] chat model=mock-assistant stream=true messages=2 temp=0.5 top_p=0.5 auth=yes
-16:04:54 [mock] chat model=mock-assistant stream=false messages=4 task=title auth=yes
+16:29:23 [mock] chat model=openai-gpt5.6-sol stream=true messages=2 temp=0.5 top_p=0.5 auth=yes
+16:29:25 [mock] chat model=qwen3-30b-a3b-instruct-2507 stream=false messages=4 task=title auth=yes
 ```
 
 ## Die Mock-API direkt nutzen
@@ -91,7 +195,9 @@ Im Terminal protokolliert der Mock-Server jede Anfrage, z. B.:
 ```bash
 curl http://localhost:8090/v1/models
 curl http://localhost:8090/v1/chat/completions -H "Content-Type: application/json" \
-  -d '{"model": "mock-echo", "messages": [{"role": "user", "content": "Test"}]}'
+  -d '{"model": "meta-llama-3.1-8b-instruct", "messages": [{"role": "user", "content": "Hilfe"}]}'
+curl http://localhost:8090/v1/embeddings -H "Content-Type: application/json" \
+  -d '{"model": "e5-mistral-7b-instruct", "input": "Hallo Welt"}'
 ```
 
 Oder mit dem offiziellen OpenAI-SDK, genau wie bei der Academic-Cloud-API:
@@ -100,7 +206,7 @@ Oder mit dem offiziellen OpenAI-SDK, genau wie bei der Academic-Cloud-API:
 from openai import OpenAI
 client = OpenAI(base_url="http://localhost:8090/v1", api_key="mock")
 print(client.chat.completions.create(
-    model="mock-assistant",
+    model="qwen3-30b-a3b-instruct-2507",
     messages=[{"role": "user", "content": "Hilfe"}],
 ).choices[0].message.content)
 ```
@@ -116,20 +222,24 @@ docker compose up            # oder: back/ und front/ einzeln starten, siehe REA
 ```
 
 Dann zeigt `back.json` auf `https://chat-ai.academiccloud.de/v1`, und im Modellmenü erscheinen die
-echten Modelle. `secrets/*.json` ist per `.gitignore` vom Commit ausgeschlossen.
+echten Modelle – mit denselben IDs wie im Mock. Externe Modelle sind laut GWDG nicht generell per
+API freigeschaltet. `secrets/*.json` ist per `.gitignore` vom Commit ausgeschlossen.
 
-## Eigene Mock-Modelle ergänzen
+## Modelle ergänzen oder aktualisieren
 
-1. In `mock/models.mjs` einen Eintrag in `MODELS` anlegen (Felder wie bei der GWDG-API:
-   `input`, `output`, `status`, `demand`, `description` …).
-2. Unten in `RESPONDERS` eine Funktion hinterlegen, die `{ content, reasoning? }` zurückgibt.
-3. Optional: `front/src/config/models/<modell-id>.json` für Reasoning-Stufen anlegen.
-4. Mock-Server neu starten.
+1. In `mock/catalog.mjs` einen Eintrag mit `model(id, name, anbieter, familie, { … })` anlegen.
+   Felder wie bei der GWDG-API: Eingabetypen, Thinking (`"visible"` oder `"hidden"`), extern,
+   Release, Kontext, Parameter, Beschreibung.
+2. Optional: `front/src/config/models/<modell-id>.json` für Reasoning-Stufen anlegen.
+3. `node mock/check-catalog.mjs` ausführen und den Mock-Server neu starten.
+
+Die Antworten stehen in `mock/models.mjs` und richten sich automatisch nach den Fähigkeiten im
+Katalog.
 
 ## Änderungen gegenüber gwdg/chat-ai
 
-- Neu: `mock/` (Mock-Server, Demo-Konfiguration, Startskript, Dockerfile),
-  `docker-compose.mock.yml`, diese Datei und `front/src/config/models/mock-reasoning.json`.
+- Neu: `mock/` (Mock-Server mit Modellkatalog, Demo-Konfiguration, Startskript, Dockerfile),
+  `docker-compose.mock.yml` und diese Datei.
 - Fehlerbehebung `back/service.mjs`: Der PDF-Upload schlug fehl, weil das Frontend die Datei im
   Feld `files` schickt, der Proxy aber nur `document` akzeptierte und dann das falsche Objekt
   weiterreichte.
@@ -150,5 +260,7 @@ git pull upstream main
   Gerät (z. B. Handy im WLAN) müssen `backendPath`, `modelsPath` und `userDataPath` auf die
   Adresse des Rechners zeigen.
 - Videogenerierung, Arcana und MCP werden nur angedeutet.
+- Die Modellliste ist eine Momentaufnahme vom 31.10.2026. Neue GWDG-Modelle müssen im Katalog
+  nachgetragen werden.
 
 Lizenz: GPL-3.0, wie das Original (siehe `LICENSE`).

@@ -38,7 +38,7 @@ front/src/
   utils/          sendMessage, conversationUtils, attachments, appContext, tabChangeSync
 back/service.mjs  POST /documents, GET /models, GET /user, POST /audio/speech, POST /chat/completions
 secrets/          front.json + back.json (gitignored; *.sample committed)
-mock/             demo-only mock of the upstream API (server.mjs, models.mjs) + mock/config/*.json
+mock/             demo-only mock of the upstream API (server.mjs, catalog.mjs, models.mjs) + mock/config/*.json
 ```
 
 `mock/` is not part of upstream `gwdg/chat-ai`; it belongs to this demo fork (see MOCK-DEMO.md).
@@ -78,7 +78,9 @@ docker compose -f docker-compose.mock.yml up --build   # same, in containers
 
 Both point `CONFIG_LOCATION` at `mock/config/{front,back}.json`. The mock (`mock/server.mjs`) has
 no dependencies and must be restarted after edits; `start-demo.sh` stops all three services as soon
-as one exits. Model catalog and canned answers live in `mock/models.mjs`.
+as one exits. The model catalog (real Chat AI IDs and names) lives in `mock/catalog.mjs`, the canned
+answers in `mock/models.mjs`. After adding a `front/src/config/models/<id>.json`, run
+`node mock/check-catalog.mjs`: it fails if a configured model has no mock.
 
 ### Docker
 
