@@ -79,7 +79,9 @@ docker compose -f docker-compose.mock.yml up --build   # same, in containers
 Both point `CONFIG_LOCATION` at `mock/config/{front,back}.json`. The mock (`mock/server.mjs`) has
 no dependencies and must be restarted after edits; `start-demo.sh` stops all three services as soon
 as one exits. The model catalog (real Chat AI IDs and names) lives in `mock/catalog.mjs`, the canned
-answers in `mock/models.mjs`. After adding a `front/src/config/models/<id>.json`, run
+answers in `mock/models.mjs`. `mock/kurs.mjs` holds scripted answers for the video course: a prompt
+that matches an entry exactly (whitespace collapsed) gets its fixed answer, chat title and streaming
+delay instead of the generated one. After adding a `front/src/config/models/<id>.json`, run
 `node mock/check-catalog.mjs`: it fails if a configured model has no mock.
 
 Vercel (`vercel.json`): the front is built with `vercel/front.json` (relative `/backend` paths), and

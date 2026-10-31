@@ -13,6 +13,7 @@ import http from "node:http";
 import { randomUUID } from "node:crypto";
 import { CHAT_MODELS, EMBEDDING_MODELS, ALL_MODELS, publicModel } from "./catalog.mjs";
 import { STREAM_DELAY, analyze, respond, isTitleRequest, makeTitle, isMemoryRequest, makeMemory } from "./models.mjs";
+import { courseReply, courseTitle } from "./kurs.mjs";
 import { makeSpeechWav, makePromptSvg, parseMultipart, extractPdfText } from "./media.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 8090);
@@ -164,9 +165,15 @@ async function chatCompletions(req, res) {
   const tools = body.stream && !internal ? simulateTools(ctx) : { steps: [], note: "" };
   ctx.usedTools = tools.steps.length > 0;
 
+  // Scripted answers for the video course (mock/kurs.mjs) take precedence.
+  const course = internal ? undefined : courseReply(ctx);
+  const firstUser = ctx.users[0];
+  const firstText = typeof firstUser?.content === "string" ? firstUser.content : firstUser?.content?.find?.((p) => p.type === "text")?.text;
+
   let reply;
-  if (internal === "title") reply = { content: makeTitle(ctx) };
+  if (internal === "title") reply = { content: courseTitle(firstText) || makeTitle(ctx) };
   else if (internal === "memory") reply = { content: JSON.stringify(makeMemory(ctx)) };
+  else if (course) reply = { content: course.content };
   else reply = respond(ctx);
 
   const content = reply.content + tools.note;
@@ -197,7 +204,7 @@ async function chatCompletions(req, res) {
   let closed = false;
   res.on("close", () => (closed = true));
   const send = (obj) => !closed && res.write(`data: ${JSON.stringify(obj)}\n\n`);
-  const delay = STREAM_DELAY[model.id] ?? STREAM_DELAY.default;
+  const delay = course?.delay ?? STREAM_DELAY[model.id] ?? STREAM_DELAY.default;
   const tokens = (text) => text.match(/\S+\s*|\s+/g) || [];
 
   send(chunkOf(id, model.id, { role: "assistant", content: "" }));

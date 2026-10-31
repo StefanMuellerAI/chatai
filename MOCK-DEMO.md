@@ -247,6 +247,10 @@ API freigeschaltet. `secrets/*.json` ist per `.gitignore` vom Commit ausgeschlos
 Die Antworten stehen in `mock/models.mjs` und richten sich automatisch nach den Fähigkeiten im
 Katalog.
 
+Für den Videokurs gibt es feste Antworten in `mock/kurs.mjs`: Tippt man genau eine der dort
+hinterlegten Fragen, liefert der Mock die vorbereitete Antwort, einen passenden Chat-Titel und ein
+langsameres Streaming-Tempo, damit jede Aufnahme gleich aussieht.
+
 ## Änderungen gegenüber gwdg/chat-ai
 
 - Neu: `mock/` (Mock-Server mit Modellkatalog, Demo-Konfiguration, Startskript, Dockerfile),
