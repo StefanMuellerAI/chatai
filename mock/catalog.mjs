@@ -250,7 +250,7 @@ export const CHAT_MODELS = [
     group: "demo", context: "8k", description: "Gibt die letzte Nachricht unverändert zurück – praktisch, um den Datenfluss zu prüfen.",
   }),
   model("mock-showcase", "Demo: Markdown-Showcase", "Demo", "Demo", {
-    group: "demo", context: "8k", description: "Antwortet immer mit Tabellen, Code, LaTeX-Formeln, Listen und Zitaten.",
+    group: "demo", context: "8k", description: "Antwortet immer mit Tabellen, Code, Formeln, einem Mermaid-Diagramm, Listen und Zitaten.",
   }),
   model("mock-slow", "Demo: Langsam (hohe Last)", "Demo", "Demo", {
     group: "demo", context: "8k", demand: 5, description: "Streamt absichtlich langsam Wort für Wort – gut für den Stopp-Button.",

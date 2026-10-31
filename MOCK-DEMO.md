@@ -217,6 +217,11 @@ print(client.chat.completions.create(
 ).choices[0].message.content)
 ```
 
+## Funktionsinventar
+
+Alle 106 Funktionen der Oberfläche mit Beschreibung, Fundort und Screenshot stehen in
+[docs/funktionsinventar](docs/funktionsinventar/README.md).
+
 ## Auf echte Modelle umstellen
 
 Wer einen API-Key für Chat AI hat, nutzt die Original-Konfiguration aus dem Upstream-Projekt:
@@ -251,6 +256,12 @@ Katalog.
   weiterreichte.
 - Fehlerbehebung `front/src/apis/generateAudio.jsx`: Vorlesen brach bei Audiodateien ab ca. 100 KB
   mit „Maximum call stack size exceeded“ ab. Die Base64-Umwandlung läuft jetzt in Blöcken.
+- Deutsch als Standardsprache: neuer, optionaler Schlüssel `defaultLanguage` in `front.json`
+  (in beiden Demo-Konfigurationen auf `de`). Hart codierte englische Texte der Oberfläche
+  (Modellauswahl, Nachrichten-Buttons, Regler, Dialoge, Meldungen, Werkzeug-Fortschritt) laufen
+  jetzt über die Übersetzungsdateien.
+- Fehlerbehebung `MermaidDiagram.jsx`: Diagramme zeigten leere Kästen, weil die SVG-Bereinigung
+  die HTML-Beschriftungen entfernte. Mermaid erzeugt jetzt reine SVG-Texte.
 
 Updates aus dem Original-Repo holen:
 

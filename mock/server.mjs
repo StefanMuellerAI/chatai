@@ -64,6 +64,7 @@ function sendError(res, status, message, type, code = null) {
 function simulateTools(ctx) {
   const steps = []; // { delta } chunks streamed before the answer
   let note = "";
+  let references = ""; // rendered by the web interface as "Quellen und Referenzen"
   const has = (type) => ctx.tools.includes(type);
   const event = (name, args) =>
     steps.push({
@@ -79,7 +80,12 @@ function simulateTools(ctx) {
     event("websearch.event", { event: "fetch", url: "https://example.org/mock-quelle-1" });
     event("websearch.event", { event: "fetch", url: "https://example.org/mock-quelle-2" });
     event("websearch.event", { event: "websearch_done", selected: 2 });
-    note += `\n\n**Websuche (simuliert):** Gesucht wurde nach „${query}“. Die Quellen sind Platzhalter:\n1. https://example.org/mock-quelle-1\n2. https://example.org/mock-quelle-2`;
+    note += `\n\n**Websuche (simuliert):** Gesucht wurde nach „${query}“. Die Quellen unten sind Platzhalter.`;
+    references =
+      `[RREF1] [Mock-Quelle 1: Überblick zu „${short(query, 40)}“](https://example.org/mock-quelle-1)\n` +
+      "Simulierter Auszug: So würde ChatAI einen gefundenen Textabschnitt aus der ersten Quelle anzeigen.\n" +
+      "[RREF2] [Mock-Quelle 2: Hintergrund und Details](https://example.org/mock-quelle-2)\n" +
+      "Simulierter Auszug: Jede Quelle lässt sich aufklappen, kopieren und im Browser öffnen.";
   }
   if (ctx.body.arcana?.id) {
     event("arcana.event", { event: "accessing", arcana: ctx.body.arcana.id });
@@ -113,6 +119,8 @@ function simulateTools(ctx) {
     event("audio_transcription.event", { event: "begin" });
     event("audio_transcription.event", { event: "done", transcription: `(Mock-Transkript: ${ctx.audio.length} Audiodatei(en) empfangen)` });
   }
+  // The web interface expects references last, after a line of dashes.
+  if (references) note += `\n\n-----\nReferences:\n${references}`;
   return { steps, note };
 }
 

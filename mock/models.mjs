@@ -64,7 +64,7 @@ export function analyze(body) {
 }
 
 const nameFromMemory = (memories) =>
-  memories.map((m) => /The user's name is ([^.]+)/i.exec(m)?.[1]).find(Boolean);
+  memories.map((m) => /(?:Die Person heißt|The user's name is) ([^.]+)/i.exec(m)?.[1]).find(Boolean);
 
 const quote = (s) => s.split("\n").map((l) => "> " + l).join("\n");
 const cell = (s) => String(s).replace(/\|/g, "\\|").replace(/\n/g, " ");
@@ -97,10 +97,10 @@ export function makeMemory(ctx) {
   const message = /Here is the new user message:\s*"([\s\S]*?)"\s*Respond/.exec(ctx.text)?.[1] || "";
   const existing = [...ctx.text.matchAll(/^\s*(\d+)\. (.+)$/gm)].map((m) => ({ line: Number(m[1]), text: m[2] }));
   const rules = [
-    [/(?:ich hei(?:ß|ss)e|mein name ist|my name is|nenn(?:t)? mich)\s+([\p{Lu}][\p{L}-]+)/iu, (v) => `The user's name is ${v}.`, "The user's name"],
-    [/(?:ich wohne in|ich lebe in|i live in)\s+([\p{L} -]+?)(?:[.,!?]|$)/iu, (v) => `The user lives in ${v.trim()}.`, "The user lives"],
-    [/(?:ich arbeite (?:bei|an|als)|i work (?:at|as))\s+([^.,!?]+)/iu, (v) => `The user works ${v.trim()}.`, "The user works"],
-    [/(?:ich mag|ich liebe|i like|i love)\s+([^.,!?]+)/iu, (v) => `The user likes ${v.trim()}.`, null],
+    [/(?:ich hei(?:ß|ss)e|mein name ist|my name is|nenn(?:t)? mich)\s+([\p{Lu}][\p{L}-]+)/iu, (v) => `Die Person heißt ${v}.`, "Die Person heißt"],
+    [/(?:ich wohne in|ich lebe in|i live in)\s+([\p{L} -]+?)(?:[.,!?]|$)/iu, (v) => `Die Person wohnt in ${v.trim()}.`, "Die Person wohnt"],
+    [/ich arbeite\s+((?:bei|an|als)\s+[^.,!?]+)/iu, (v) => `Die Person arbeitet ${v.trim()}.`, "Die Person arbeitet"],
+    [/(?:ich mag|ich liebe|i like|i love)\s+([^.,!?]+)/iu, (v) => `Die Person mag ${v.trim()}.`, null],
   ];
   for (const [re, toSentence, prefix] of rules) {
     const value = re.exec(message)?.[1];
@@ -381,6 +381,15 @@ Inline: $E = mc^2$ und als Block:
 $$
 \\int_0^\\infty e^{-x^2}\\,dx = \\frac{\\sqrt{\\pi}}{2}
 $$
+
+## Diagramme
+
+\`\`\`mermaid
+flowchart LR
+  B[Browser] --> P[Backend-Proxy]
+  P --> M[Mock-API]
+  P -. Produktion .-> G[GWDG SAIA]
+\`\`\`
 
 ## Listen
 

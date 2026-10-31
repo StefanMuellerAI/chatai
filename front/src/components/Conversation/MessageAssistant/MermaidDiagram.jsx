@@ -3,8 +3,9 @@ import { useState, useEffect, memo } from "react";
 import mermaid from "mermaid";
 import DOMPurify from "dompurify";
 
-// Initialize mermaid once
-mermaid.initialize({ startOnLoad: false, theme: "forest" });
+// Initialize mermaid once. Labels must be plain SVG text: the default HTML labels
+// live in <foreignObject>, which the DOMPurify SVG profile below strips, leaving empty boxes.
+mermaid.initialize({ startOnLoad: false, theme: "forest", htmlLabels: false, flowchart: { htmlLabels: false } });
 
 const MermaidDiagram = memo(({ content }) => {
   const [svg, setSvg] = useState(null);
