@@ -1,3 +1,7 @@
+> **Demo-Fork:** Dieses Repository enthält zusätzlich einen Mock-Server mit simulierten Modellen,
+> damit sich Chat AI ohne API-Key vorführen lässt. Start mit `./mock/start-demo.sh` –
+> Details in [MOCK-DEMO.md](MOCK-DEMO.md). Original: [gwdg/chat-ai](https://github.com/gwdg/chat-ai).
+
 <p align="center">
   <picture>
     <img alt="Chat AI" src="assets/chatai-logo.png" width=30%>

@@ -1,0 +1,44 @@
+# Chat AI demo with simulated models - no API key needed.
+#
+#   docker compose -f docker-compose.mock.yml up --build
+#
+# Then open http://localhost:8080. Same layout as docker-compose.yml,
+# but back talks to the mock API and both services use mock/config/.
+services:
+  mock:
+    image: chat-ai-mock:latest
+    build: ./mock
+    network_mode: "host"
+    restart: on-failure
+
+  back:
+    image: chat-ai-back:latest
+    build: ./back
+    network_mode: "host"
+    volumes:
+      - ./back:/usr/src/app
+      - /usr/src/app/node_modules
+    secrets:
+      - back
+    depends_on:
+      - mock
+    restart: on-failure
+
+  front:
+    image: chat-ai-front:latest
+    build: ./front
+    network_mode: "host"
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/node_modules
+    secrets:
+      - front
+    depends_on:
+      - back
+    restart: on-failure
+
+secrets:
+  front:
+    file: ./mock/config/front.json
+  back:
+    file: ./mock/config/back.json

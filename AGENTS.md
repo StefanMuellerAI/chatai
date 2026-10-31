@@ -38,7 +38,10 @@ front/src/
   utils/          sendMessage, conversationUtils, attachments, appContext, tabChangeSync
 back/service.mjs  POST /documents, GET /models, GET /user, POST /audio/speech, POST /chat/completions
 secrets/          front.json + back.json (gitignored; *.sample committed)
+mock/             demo-only mock of the upstream API (server.mjs, models.mjs) + mock/config/*.json
 ```
+
+`mock/` is not part of upstream `gwdg/chat-ai`; it belongs to this demo fork (see MOCK-DEMO.md).
 
 ## 3. Setup and commands
 
@@ -65,6 +68,17 @@ Both default `CONFIG_LOCATION` to `../secrets/<name>.json` and `path.resolve` it
 exits, while `back` only logs `Failed to read back.json. Using default values.` and keeps running
 **with an empty `apiKey`** — so every upstream call comes back unauthorized. If requests are
 rejected, check that log line first.
+
+### Mock demo (no API key)
+
+```bash
+./mock/start-demo.sh                                   # mock :8090, back :8081, front :8080
+docker compose -f docker-compose.mock.yml up --build   # same, in containers
+```
+
+Both point `CONFIG_LOCATION` at `mock/config/{front,back}.json`. The mock (`mock/server.mjs`) has
+no dependencies and must be restarted after edits; `start-demo.sh` stops all three services as soon
+as one exits. Model catalog and canned answers live in `mock/models.mjs`.
 
 ### Docker
 

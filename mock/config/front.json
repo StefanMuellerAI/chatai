@@ -1,0 +1,31 @@
+{
+    "mode": "dev",
+    "port": 8080,
+    "backendPath": "http://localhost:8081",
+    "modelsPath": "http://localhost:8081/models",
+    "userDataPath": "http://localhost:8081/user",
+    "proposalGenerationModel": "mock-assistant",
+    "titleGenerationModel": "mock-assistant",
+    "memoryGenerationModel": "mock-assistant",
+    "modules": {
+        "tools": true,
+        "feedback": false,
+        "choices": false,
+        "speech": {
+            "model": "mock-tts",
+            "voice": "demo"
+        }
+    },
+    "default": {
+        "model": {
+            "id": "mock-assistant",
+            "name": "Mock Assistent"
+        },
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant"}
+        ],
+        "top_p": 0.5,
+        "temperature": 0.5
+    },
+    "announcement": "Demo-Modus: Alle Modelle sind simuliert (Mock-Server). Es wird kein echtes KI-Modell aufgerufen."
+}
