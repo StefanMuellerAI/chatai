@@ -105,15 +105,15 @@ async function processFile(file, inference_id) {
 
 // Process PDF file
 app.post("/documents/convert/file", async (req, res) => {
-  // Check for the presence of `document` file key
-  if (!req.files || !req.files.document) {
+  // The front end sends the file as `files`; `document` is still accepted
+  let file = req.files?.files || req.files?.document;
+  if (Array.isArray(file)) file = file[0];
+  if (!file) {
     return res.status(422).json({ error: "No file provided" });
   }
 
   const inference_id = req.headers["inference-id"];
   try {
-    // Access the file using the correct key name
-    const file = req.files;
     const response = await processFile(file, inference_id);
     if (!response.ok) {
       return res.status(response.status).send(response.statusText);

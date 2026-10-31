@@ -62,9 +62,13 @@ export default async function generateAudio(
     }
 
     const arrayBuffer = await response.arrayBuffer();
-    const base64 = btoa(
-      String.fromCharCode(...new Uint8Array(arrayBuffer))
-    );
+    // Convert in chunks: spreading a large array into fromCharCode overflows the call stack
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    }
+    const base64 = btoa(binary);
 
     audioPayload = {
       data: base64,
